@@ -24,14 +24,21 @@ connect();
 
 let all = async()=>{
     const conn = await connect();
-    const [rows] = await conn.query('SELECT * FROM users');
+    const [rows] = await conn.query('SELECT id, name, email FROM users ORDER BY name');
+    conn.end();
+    return rows;
+}
+
+let one = async(id)=>{
+    const conn = await connect();
+    const [rows] = await conn.query('SELECT name, email, admin, dpo, setor FROM users WHERE id = ?', [id]);
     conn.end();
     return rows;
 }
 
 let allInactives = async()=>{
     const conn = await connect();
-    const [rows] = await conn.query('SELECT * FROM users WHERE active = 0');
+    const [rows] = await conn.query('SELECT id, name, email FROM users WHERE active = 0');
     conn.end();
     return rows;
 }
@@ -62,10 +69,26 @@ let reactivateUser = async(id)=>{
     conn.end();
 }
 
+let updateOne = async(name, email, admin, dpo, setor, id)=>{
+    const conn = await connect();
+    const [rows] = await conn.query('UPDATE docspro.users SET name = ?, email = ?, admin = ?, dpo = ?, setor = ? WHERE id = ?', [
+        name,
+        email,
+        admin,
+        dpo,
+        setor,
+        id
+    ]);
+    conn.end();
+    return rows;
+}
+
 module.exports = {
     all,
     register,
     userRegisterConfirmation,
     allInactives,
-    reactivateUser
+    reactivateUser,
+    one,
+    updateOne
 };

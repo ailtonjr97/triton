@@ -6,17 +6,25 @@ const router = express.Router();
 
 router.get("/get_all", async(req, res)=>{
     try {
-        res.send(await Users.all())
+        res.send(await Users.all());
     } catch (error) {
-        res.send(error)
+        res.send(error);
     }
 });
 
 router.get("/get_all/inactive", async(req, res)=>{
     try {
-        res.send(await Users.allInactives())
+        res.send(await Users.allInactives());
     } catch (error) {
-        res.send(error)
+        res.send(error);
+    }
+});
+
+router.get("/:id", async(req, res)=>{
+    try {
+        res.send(await Users.one(req.params.id));
+    } catch (error) {
+        res.send(error);
     }
 });
 
@@ -41,9 +49,26 @@ router.post("/register", async(req, res)=>{
     }
 });
 
-router.post("/reactivate", async(req, res)=>{
+router.post("/alter/:id", async(req, res)=>{
     try {
-        Users.reactivateUser()
+        await Users.updateOne(
+            req.body.name,
+            req.body.email,
+            req.body.admin,
+            req.body.dpo,
+            req.body.setor,
+            req.params.id
+        )
+        res.sendStatus(200)
+    } catch (error) {
+        console.log(error)
+        res.sendStatus(500);
+    }
+});
+
+router.post("/reactivate/:id", async(req, res)=>{
+    try {
+        await Users.reactivateUser(req.params.id)
         res.send(200)
     } catch (error) {
         res.send(500)

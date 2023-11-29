@@ -5,7 +5,7 @@ const bodyParser = require("body-parser");
 const users = require("./controllers/usersController.js");
 
 var corsOptions = {
-origin: 'http://192.168.221.131:8080',
+origin: ['http://192.168.221.131:8080', 'http://192.168.2.5:8080'],
 optionsSuccessStatus: 200
 }
 
