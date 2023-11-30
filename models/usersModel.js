@@ -24,7 +24,7 @@ connect();
 
 let all = async()=>{
     const conn = await connect();
-    const [rows] = await conn.query('SELECT id, name, email FROM users ORDER BY name');
+    const [rows] = await conn.query('SELECT id, name, email FROM users WHERE active = 1 ORDER BY name');
     conn.end();
     return rows;
 }
@@ -63,6 +63,12 @@ let userRegisterConfirmation = async(email)=>{
     return rows;
 }
 
+let inactivateUser = async(id)=>{
+    const conn = await connect();
+    await conn.query('UPDATE docspro.users SET active = 0 WHERE id = ?', [id]);
+    conn.end();
+}
+
 let reactivateUser = async(id)=>{
     const conn = await connect();
     await conn.query('UPDATE docspro.users SET active = 1 WHERE id = ?', [id]);
@@ -83,6 +89,30 @@ let updateOne = async(name, email, admin, dpo, setor, id)=>{
     return rows;
 }
 
+let passwordReset = async(password, id)=>{
+    const conn = await connect();
+    await conn.query('UPDATE docspro.users SET password = ? WHERE id = ?', [password, id])
+    return true;
+}
+
+let emailCheck = async(email)=>{
+    const conn = await connect();
+    const [rows] = await conn.query('SELECT * FROM docspro.users WHERE email = ? AND active = 1', [email])
+    return rows;
+}
+
+let passwordReturn = async(email)=>{
+    const conn = await connect();
+    const [rows] = await conn.query('SELECT password FROM docspro.users WHERE email = ? AND active = 1', [email])
+    return rows;
+}
+
+let getUserJwt = async(email)=>{
+    const conn = await connect();
+    const [rows] = await conn.query('SELECT id FROM docspro.users WHERE email = ? AND active = 1', [email])
+    return rows;
+}
+
 module.exports = {
     all,
     register,
@@ -90,5 +120,10 @@ module.exports = {
     allInactives,
     reactivateUser,
     one,
-    updateOne
+    updateOne,
+    inactivateUser,
+    passwordReset,
+    emailCheck,
+    passwordReturn,
+    getUserJwt
 };
