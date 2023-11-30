@@ -1,11 +1,13 @@
 const express = require("express");
 var cors = require('cors');
 const bodyParser = require("body-parser");
+const jwt = require('jsonwebtoken')
 
 const users = require("./controllers/usersController.js");
+const auth = require("./controllers/authController.js");
 
 var corsOptions = {
-origin: ['http://192.168.221.131:8080', 'http://192.168.2.5:8080', 'http://192.168.100.10:8080'],
+origin: [process.env.ORIGIN1, process.env.ORIGIN2, process.env.ORIGIN3],
 optionsSuccessStatus: 200
 }
 
@@ -14,7 +16,30 @@ const app = express();
 app.use(express.static("public"));
 app.use(bodyParser.json());
 
-app.use("/users", cors(corsOptions), users);
+function authenticationMiddleware(req, res, next){
+    try {
+        const token = req.header('Authorization')
+        const withoutBearerToken = token.replace('Bearer ', '');
+        if(withoutBearerToken){
+            jwt.verify(withoutBearerToken, process.env.JWTSECRET, (err)=>{
+              if(err){
+                  res.sendStatus(401)
+              } else {
+                next();
+              }
+            })
+          }else{
+              res.sendStatus(401)
+          }
+    } catch (error) {
+        console.log(error)
+        res.sendStatus(401)
+    }
+}
+
+app.use("/auth", cors(corsOptions), auth);
+app.use("/users", cors(corsOptions), authenticationMiddleware, users);
+
 
 app.listen(5000, function () {
     console.log("Node.js working in port 5000");
