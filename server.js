@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const jwt = require('jsonwebtoken')
 
 const users = require("./controllers/usersController.js");
+const qualidade = require("./controllers/qualidadeController.js");
 const auth = require("./controllers/authController.js");
 
 var corsOptions = {
@@ -39,6 +40,7 @@ function authenticationMiddleware(req, res, next){
 
 app.use("/auth", cors(corsOptions), auth);
 app.use("/users", cors(corsOptions), authenticationMiddleware, users);
+app.use("/qualidade", cors(corsOptions), authenticationMiddleware, qualidade);
 
 
 app.listen(5000, function () {
