@@ -73,11 +73,11 @@ router.post("/alter/:id", async(req, res)=>{
 
 router.get("/inactivate/:id", async(req, res)=>{
     try {
-        await Users.inactivateUser(req.params.id)
-        res.sendStatus(200)
+        await Users.inactivateUser(req.params.id);
+        res.sendStatus(200);
     } catch (error) {
-        console.log(error)
-        res.sendStatus(500)
+        console.log(error);
+        res.sendStatus(500);
     }
 });
 

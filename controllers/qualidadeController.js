@@ -20,4 +20,23 @@ router.get("/documentos/:id", async(req, res)=>{
     }
 });
 
+router.get("/inspetores/:setor", async(req, res)=>{
+    try {
+        res.send(await Qualidade.inspetores(req.params.setor))
+    } catch (error) {
+        console.log(error)
+        res.sendStatus(500)
+    }
+});
+
+router.post("/documentos/create", async(req, res)=>{
+    try {
+        await Qualidade.create(req.body);
+        res.sendStatus(200);
+    } catch (error) {
+        console.log(error)
+        res.sendStatus(500)
+    }
+})
+
 module.exports = router;

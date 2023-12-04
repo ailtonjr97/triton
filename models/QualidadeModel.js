@@ -24,7 +24,7 @@ connect();
 
 const all = async()=>{
     const conn = await connect();
-    const [rows] = await conn.query('SELECT id, tipo_doc, data, inspetor FROM docspro.docs_qualidade');
+    const [rows] = await conn.query('SELECT id, tipo_doc, data, inspetor FROM docspro.docs_qualidade ORDER BY id DESC');
     conn.end();
     return rows;
 }
@@ -36,7 +36,36 @@ const one = async(id)=>{
     return rows;
 }
 
+const inspetores = async(setor)=>{
+    const conn = await connect();
+    const [rows] = await conn.query("SELECT id, name FROM docspro.users WHERE setor = ? AND active = 1", setor);
+    conn.end();
+    return rows;
+}
+
+const create = async(body)=>{
+    const conn = await connect();
+    await conn.query(
+        `INSERT INTO docspro.docs_qualidade (
+            tipo_doc, 
+            data, 
+            inspetor, 
+            cod_prod, 
+            descri, 
+            lote_odf, 
+            lance, 
+            quantidade_metragem, 
+            cpnc_numero, 
+            motivo_nc
+        )
+        VALUES ('FOR-EDP-025', ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [body.data, body.inspetor, body.cod_prod, body.descri, body.lote_odf, body.lance, body.quantidade_metragem, body.cpnc_numero, body.motivo_nc]);
+    conn.end();
+}
+
 module.exports = {
     all,
-    one
+    one,
+    inspetores,
+    create
 };
