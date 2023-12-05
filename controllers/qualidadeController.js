@@ -39,4 +39,15 @@ router.post("/documentos/create", async(req, res)=>{
     }
 })
 
+router.post("/documentos/editarEdp/:id", async(req, res)=>{
+    try {
+        console.log(req.body)
+        await Qualidade.edpUpdate(req.body, req.params.id)
+        res.sendStatus(200);
+    } catch (error) {
+        console.log(error)
+        res.sendStatus(500)
+    }
+})
+
 module.exports = router;

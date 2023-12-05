@@ -24,7 +24,7 @@ connect();
 
 const all = async()=>{
     const conn = await connect();
-    const [rows] = await conn.query('SELECT id, tipo_doc, data, inspetor FROM docspro.docs_qualidade ORDER BY id DESC');
+    const [rows] = await conn.query('SELECT id, tipo_doc, data, inspetor, edp_preenchido FROM docspro.docs_qualidade ORDER BY id DESC');
     conn.end();
     return rows;
 }
@@ -63,9 +63,24 @@ const create = async(body)=>{
     conn.end();
 }
 
+const edpUpdate = async(body, id)=>{
+    const conn = await connect();
+    await conn.query(`
+        UPDATE docspro.docs_qualidade SET
+        tempo_previsto = ?,
+        instrucao_reprocesso = ?,
+        edp_responsavel = ?,
+        edp_data = ?,
+        edp_preenchido = 1
+        WHERE id = ?
+    `, [body.tempo_previsto, body.instrucao_reprocesso, body.edp_responsavel, body.edp_data, id]);
+    conn.end();
+}
+
 module.exports = {
     all,
     one,
     inspetores,
-    create
+    create,
+    edpUpdate
 };
