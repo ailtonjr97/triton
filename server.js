@@ -19,10 +19,9 @@ app.use(bodyParser.json());
 
 function authenticationMiddleware(req, res, next){
     try {
-        const token = req.header('Authorization')
-        const withoutBearerToken = token.replace('Bearer ', '');
-        if(withoutBearerToken){
-            jwt.verify(withoutBearerToken, process.env.JWTSECRET, (err)=>{
+        const token = req.headers.authorization.replace('jwt=', '')
+        if(token){
+            jwt.verify(token, process.env.JWTSECRET, (err)=>{
               if(err){
                   res.sendStatus(401)
               } else {

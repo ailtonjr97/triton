@@ -24,7 +24,7 @@ connect();
 
 const all = async()=>{
     const conn = await connect();
-    const [rows] = await conn.query('SELECT id, tipo_doc, data, inspetor, edp_preenchido FROM docspro.docs_qualidade ORDER BY id DESC');
+    const [rows] = await conn.query('SELECT id, tipo_doc, data, inspetor, edp_preenchido, pcp_preenchido, producao_preenchido, qualidade_preenchido FROM docspro.docs_qualidade ORDER BY id DESC');
     conn.end();
     return rows;
 }
@@ -56,9 +56,13 @@ const create = async(body)=>{
             lance, 
             quantidade_metragem, 
             cpnc_numero, 
-            motivo_nc
+            motivo_nc,
+            edp_preenchido,
+            pcp_preenchido,
+            producao_preenchido,
+            qualidade_preenchido
         )
-        VALUES ('FOR-EDP-025', ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        VALUES ('FOR-EDP-025', ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0)`,
     [body.data, body.inspetor, body.cod_prod, body.descri, body.lote_odf, body.lance, body.quantidade_metragem, body.cpnc_numero, body.motivo_nc]);
     conn.end();
 }
@@ -77,10 +81,43 @@ const edpUpdate = async(body, id)=>{
     conn.end();
 }
 
+const pcpUpdate = async(body, id)=>{
+    const conn = await connect();
+    await conn.query(`
+        UPDATE docspro.docs_qualidade SET
+        pcp_odf_retrabalho = ?,
+        pcp_responsavel = ?,
+        pcp_data = ?,
+        pcp_obs = ?,
+        pcp_preenchido = 1
+        WHERE id = ?
+    `, [body.pcp_odf_retrabalho, body.pcp_responsavel, body.pcp_data, body.pcp_obs, id]);
+    conn.end();
+}
+
+const producaoUpdate = async(body, id)=>{
+    const conn = await connect();
+    await conn.query(`
+        UPDATE docspro.docs_qualidade SET
+        prod_tempo_realizado = ?,
+        prod_insumos = ?,
+        prod_sucata = ?,
+        prod_obs = ?,
+        prod_responsavel = ?,
+        prod_data = ?,
+        prod_status = ?,
+        producao_preenchido = 1
+        WHERE id = ?
+    `, [body.prod_tempo_realizado, body.prod_insumos, body.prod_sucata, body.prod_obs, body.prod_responsavel, body.prod_data, body.prod_status, id]);
+    conn.end();
+}
+
 module.exports = {
     all,
     one,
     inspetores,
     create,
-    edpUpdate
+    edpUpdate,
+    pcpUpdate,
+    producaoUpdate
 };
