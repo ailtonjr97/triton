@@ -62,7 +62,7 @@ const create = async(body)=>{
             producao_preenchido,
             qualidade_preenchido
         )
-        VALUES ('FOR-EDP-025', ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0)`,
+        VALUES ('FOR-EDP-025', ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0, 0)`,
     [body.data, body.inspetor, body.cod_prod, body.descri, body.lote_odf, body.lance, body.quantidade_metragem, body.cpnc_numero, body.motivo_nc]);
     conn.end();
 }
@@ -112,6 +112,20 @@ const producaoUpdate = async(body, id)=>{
     conn.end();
 }
 
+const qualidadeUpdate = async(body, id)=>{
+    const conn = await connect();
+    await conn.query(`
+        UPDATE docspro.docs_qualidade SET
+        quali_parecer = ?,
+        quali_responsavel = ?,
+        quali_data = ?,
+        quali_status = ?,
+        qualidade_preenchido = 1
+        WHERE id = ?
+    `, [body.quali_parecer, body.quali_responsavel, body.quali_data, body.quali_status, id]);
+    conn.end();
+}
+
 module.exports = {
     all,
     one,
@@ -119,5 +133,6 @@ module.exports = {
     create,
     edpUpdate,
     pcpUpdate,
-    producaoUpdate
+    producaoUpdate,
+    qualidadeUpdate
 };

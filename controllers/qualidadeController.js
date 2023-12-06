@@ -69,6 +69,17 @@ router.post("/documentos/editarProducao/:id", async(req, res)=>{
     }
 })
 
+router.post("/documentos/editarQualidade/:id", async(req, res)=>{
+    try {
+        console.log(req.body)
+        await Qualidade.qualidadeUpdate(req.body, req.params.id)
+        res.sendStatus(200);
+    } catch (error) {
+        console.log(error)
+        res.sendStatus(500)
+    }
+})
+
 
 
 module.exports = router;
