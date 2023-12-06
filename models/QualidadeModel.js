@@ -82,6 +82,16 @@ const edpUpdate = async(body, id)=>{
     conn.end();
 }
 
+const edpUpdateAnexo = async(anexoNome, id)=>{
+    const conn = await connect();
+    await conn.query(`
+        UPDATE docspro.docs_qualidade SET
+        edp_anexo = ?
+        WHERE id = ?
+    `, [anexoNome, id]);
+    conn.end();
+}
+
 const pcpUpdate = async(body, id)=>{
     const conn = await connect();
     await conn.query(`
@@ -158,5 +168,6 @@ module.exports = {
     producaoUpdate,
     qualidadeUpdate,
     NcUpdate,
-    inactivateDocument
+    inactivateDocument,
+    edpUpdateAnexo
 };
