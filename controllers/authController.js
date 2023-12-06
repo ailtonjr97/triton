@@ -7,18 +7,15 @@ const router = express.Router();
 
 router.post("/login", async(req, res)=>{
     try {
-        const emailExists = await Users.emailCheck(req.body.email);
         const userPassword = await Users.passwordReturn(req.body.email);
         const userId = await Users.getUserJwt(req.body.email);
-        if(emailExists.length != 0){
             if(bcrypt.compareSync(req.body.password, userPassword[0].password)){
-                res.send(jwt.sign({id: userId[0].id}, process.env.JWTSECRET, {expiresIn: 28800}))
+                const token = jwt.sign({id: userId[0].id}, process.env.JWTSECRET, {expiresIn: 28800})
+                res.send(token)
+                console.log(token)
             }else{
                 res.status(401).send("Senha incorreta.")
             };
-        }else{
-            res.status(404).send('E-mail incorreto ou usuário inativo.');
-        }
     } catch (error) {
         console.log(error)
         res.sendStatus(500) 

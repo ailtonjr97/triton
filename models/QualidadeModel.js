@@ -24,7 +24,7 @@ connect();
 
 const all = async()=>{
     const conn = await connect();
-    const [rows] = await conn.query('SELECT id, tipo_doc, data, inspetor, edp_preenchido, pcp_preenchido, producao_preenchido, qualidade_preenchido FROM docspro.docs_qualidade ORDER BY id DESC');
+    const [rows] = await conn.query('SELECT id, tipo_doc, data, inspetor, edp_preenchido, pcp_preenchido, producao_preenchido, qualidade_preenchido, motivo_nc_preenchido FROM docspro.docs_qualidade WHERE active = 1 ORDER BY id DESC');
     conn.end();
     return rows;
 }
@@ -55,14 +55,15 @@ const create = async(body)=>{
             lote_odf, 
             lance, 
             quantidade_metragem, 
-            cpnc_numero, 
-            motivo_nc,
+            cpnc_numero,
             edp_preenchido,
             pcp_preenchido,
             producao_preenchido,
-            qualidade_preenchido
+            qualidade_preenchido,
+            motivo_nc_preenchido,
+            active
         )
-        VALUES ('FOR-EDP-025', ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0, 0)`,
+        VALUES ('FOR-EDP-025', ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0, 0, 0, 1)`,
     [body.data, body.inspetor, body.cod_prod, body.descri, body.lote_odf, body.lance, body.quantidade_metragem, body.cpnc_numero, body.motivo_nc]);
     conn.end();
 }
@@ -126,6 +127,27 @@ const qualidadeUpdate = async(body, id)=>{
     conn.end();
 }
 
+const NcUpdate = async(body, id)=>{
+    const conn = await connect();
+    await conn.query(`
+        UPDATE docspro.docs_qualidade SET
+        motivo_nc = ?,
+        motivo_nc_preenchido = 1
+        WHERE id = ?
+    `, [body.motivo_nc, id]);
+    conn.end();
+}
+
+const inactivateDocument = async(id)=>{
+    const conn = await connect();
+    await conn.query(`
+        UPDATE docspro.docs_qualidade SET
+        active = 0
+        WHERE id = ?
+    `, [id]);
+    conn.end();
+}
+
 module.exports = {
     all,
     one,
@@ -134,5 +156,7 @@ module.exports = {
     edpUpdate,
     pcpUpdate,
     producaoUpdate,
-    qualidadeUpdate
+    qualidadeUpdate,
+    NcUpdate,
+    inactivateDocument
 };
