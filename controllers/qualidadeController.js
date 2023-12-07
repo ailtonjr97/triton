@@ -46,6 +46,24 @@ router.get("/documentos/get_all", async(req, res)=>{
     }
 });
 
+router.get("/documentos/inactive", async(req, res)=>{
+    try {
+        res.send(await Qualidade.inactiveDocuments());
+    } catch (error) {
+        console.log(error)
+        res.sendStatus(500)
+    }
+})
+
+router.get("/documentos/inactive/:id", async(req, res)=>{
+    try {
+        res.send(await Qualidade.inactiveDocument(req.params.id));
+    } catch (error) {
+        console.log(error)
+        res.sendStatus(500)
+    }
+})
+
 router.get("/documentos/:id", async(req, res)=>{
     try {
         res.send(await Qualidade.one(req.params.id))
@@ -123,5 +141,7 @@ router.get("/documentos/inactivate/:id", async(req, res)=>{
         res.sendStatus(500)
     }
 })
+
+
 
 module.exports = router;

@@ -149,6 +149,21 @@ const NcUpdate = async(body, id)=>{
     conn.end();
 }
 
+const inactiveDocuments = async()=>{
+    const conn = await connect();
+    const [rows] = await conn.query(`SELECT * FROM docspro.docs_qualidade WHERE active = 0`);
+    conn.end();
+    return rows;
+}
+
+const inactiveDocument = async(id)=>{
+    const conn = await connect();
+    const [rows] = await conn.query(`SELECT * FROM docspro.docs_qualidade WHERE id = ? AND active = 0`, [id]);
+    conn.end();
+    return rows;
+}
+
+
 const inactivateDocument = async(id)=>{
     const conn = await connect();
     await conn.query(`
@@ -170,5 +185,7 @@ module.exports = {
     qualidadeUpdate,
     NcUpdate,
     inactivateDocument,
-    edpUpdateAnexo
+    edpUpdateAnexo,
+    inactiveDocuments,
+    inactiveDocument
 };

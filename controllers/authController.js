@@ -12,7 +12,6 @@ router.post("/login", async(req, res)=>{
             if(bcrypt.compareSync(req.body.password, userPassword[0].password)){
                 const token = jwt.sign({id: userId[0].id}, process.env.JWTSECRET, {expiresIn: 28800})
                 res.send(token)
-                console.log(token)
             }else{
                 res.status(401).send("Senha incorreta.")
             };
