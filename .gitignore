@@ -43,6 +43,7 @@ storage/
 node_modules/
 jspm_packages/
 temp/
+storage/
 
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
