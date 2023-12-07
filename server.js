@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken')
 const users = require("./controllers/usersController.js");
 const qualidade = require("./controllers/qualidadeController.js");
 const auth = require("./controllers/authController.js");
+const files = require("./controllers/filesController.js");
 
 var corsOptions = {
 origin: [process.env.ORIGIN1, process.env.ORIGIN2, process.env.ORIGIN3],
@@ -40,6 +41,7 @@ function authenticationMiddleware(req, res, next){
 app.use("/auth", cors(corsOptions), auth);
 app.use("/users", cors(corsOptions), authenticationMiddleware, users);
 app.use("/qualidade", cors(corsOptions), authenticationMiddleware, qualidade);
+app.use("/files", cors(corsOptions), files);
 
 
 app.listen(5000, function () {

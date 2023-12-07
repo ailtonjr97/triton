@@ -24,7 +24,7 @@ connect();
 
 const all = async()=>{
     const conn = await connect();
-    const [rows] = await conn.query('SELECT id, tipo_doc, data, inspetor, edp_preenchido, pcp_preenchido, producao_preenchido, qualidade_preenchido, motivo_nc_preenchido FROM docspro.docs_qualidade WHERE active = 1 ORDER BY id DESC');
+    const [rows] = await conn.query('SELECT id, tipo_doc, data, inspetor, edp_preenchido, pcp_preenchido, producao_preenchido, qualidade_preenchido, motivo_nc_preenchido, edp_anexo FROM docspro.docs_qualidade WHERE active = 1 ORDER BY id DESC');
     conn.end();
     return rows;
 }
@@ -61,9 +61,10 @@ const create = async(body)=>{
             producao_preenchido,
             qualidade_preenchido,
             motivo_nc_preenchido,
-            active
+            active,
+            edp_anexo
         )
-        VALUES ('FOR-EDP-025', ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0, 0, 0, 1)`,
+        VALUES ('FOR-EDP-025', ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0, 0, 0, 1, '')`,
     [body.data, body.inspetor, body.cod_prod, body.descri, body.lote_odf, body.lance, body.quantidade_metragem, body.cpnc_numero, body.motivo_nc]);
     conn.end();
 }

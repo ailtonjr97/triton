@@ -124,6 +124,4 @@ router.get("/documentos/inactivate/:id", async(req, res)=>{
     }
 })
 
-
-
 module.exports = router;
