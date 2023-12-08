@@ -35,7 +35,25 @@ const create = async(body)=>{
     conn.end();
 }
 
+const getAcy = async()=>{
+    const conn = await connect();
+    const [rows] = await conn.query('SELECT * FROM docspro.acy');
+    conn.end();
+    return rows;
+}
+
+const updateAcy = async(values)=>{
+    const conn = await connect();
+    await conn.query("TRUNCATE acy");
+    await conn.query("INSERT INTO docspro.acy (grpven, descri) VALUES ?", [values], function(err) {
+        if (err) throw err;
+    });
+    conn.end();
+}
+
 module.exports = {
     all,
-    create
+    create,
+    updateAcy,
+    getAcy
 };

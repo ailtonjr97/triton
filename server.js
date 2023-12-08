@@ -21,7 +21,28 @@ app.use(bodyParser.json());
 
 function authenticationMiddleware(req, res, next){
     try {
-        const token = req.headers.authorization.replace('jwt=', '')
+        const token = req.headers.authorization.replace('jwt=', '');
+        if(token){
+            jwt.verify(token, process.env.JWTSECRET, (err)=>{
+              if(err){
+                  res.sendStatus(401)
+              } else {
+                next();
+              }
+            })
+          }else{
+              res.sendStatus(401)
+          }
+    } catch (error) {
+        console.log(error)
+        res.sendStatus(401)
+    }
+}
+
+function authenticationMiddlewareApi(req, res, next){
+    try {
+        let token = req.headers.authorization.replace('jwt=', '');
+        token = token.replace('Bearer ', '');
         if(token){
             jwt.verify(token, process.env.JWTSECRET, (err)=>{
               if(err){
@@ -42,7 +63,7 @@ function authenticationMiddleware(req, res, next){
 app.use("/auth", cors(corsOptions), auth);
 app.use("/users", cors(corsOptions), authenticationMiddleware, users);
 app.use("/qualidade", cors(corsOptions), authenticationMiddleware, qualidade);
-app.use("/totvs", cors(corsOptions), authenticationMiddleware, totvs);
+app.use("/totvs", cors(corsOptions), authenticationMiddlewareApi, totvs);
 app.use("/files", cors(corsOptions), files);
 
 
