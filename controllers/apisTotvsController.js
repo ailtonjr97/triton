@@ -31,7 +31,7 @@ router.get("/api/acy/get_all", async(req, res)=>{
     }
 })
 
-router.get("/api/acy/update", async(req, res)=>{
+router.post("/api/acy/update", async(req, res)=>{
     try {
         const values = [];
         const limitador = await axios.get(process.env.APITOTVS + "CONSULTA_ACY/get_all", {auth: {username: process.env.USER, password: process.env.SENHAPITOTVS}});
