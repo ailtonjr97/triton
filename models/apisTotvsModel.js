@@ -51,9 +51,42 @@ const updateAcy = async(values)=>{
     conn.end();
 }
 
+const getD12 = async()=>{
+    const conn = await connect();
+    const [rows] = await conn.query('SELECT * FROM docspro.d12');
+    conn.end();
+    return rows;
+}
+
+const updateD12 = async(values)=>{
+    const conn = await connect();
+    await conn.query("TRUNCATE d12");
+    await conn.query(`INSERT INTO docspro.d12 (
+        filial, 
+        produt,
+        lotect,
+        doc,
+        serie,
+        clifor,
+        loja,
+        status,
+        servic,
+        qtdori,
+        qtdlid,
+        endori,
+        locdes,
+        enddes,
+        rechum
+    ) VALUES ?`, [values]);
+    conn.end();
+}
+
+
 module.exports = {
     all,
     create,
     updateAcy,
-    getAcy
+    getAcy,
+    getD12,
+    updateD12
 };
