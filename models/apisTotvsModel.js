@@ -35,32 +35,25 @@ const create = async(body)=>{
     conn.end();
 }
 
-const getAcy = async()=>{
+const get = async(tableName)=>{
     const conn = await connect();
-    const [rows] = await conn.query('SELECT * FROM docspro.acy');
+    const [rows] = await conn.query(`SELECT * FROM docspro.${tableName}`);
     conn.end();
     return rows;
 }
 
 const updateAcy = async(values)=>{
     const conn = await connect();
-    await conn.query("TRUNCATE acy");
+    await conn.query("TRUNCATE docspro.acy");
     await conn.query("INSERT INTO docspro.acy (grpven, descri) VALUES ?", [values], function(err) {
         if (err) throw err;
     });
     conn.end();
 }
 
-const getD12 = async()=>{
-    const conn = await connect();
-    const [rows] = await conn.query('SELECT * FROM docspro.d12');
-    conn.end();
-    return rows;
-}
-
 const updateD12 = async(values)=>{
     const conn = await connect();
-    await conn.query("TRUNCATE d12");
+    await conn.query("TRUNCATE docspro.d12");
     await conn.query(`INSERT INTO docspro.d12 (
         filial, 
         produt,
@@ -81,12 +74,71 @@ const updateD12 = async(values)=>{
     conn.end();
 }
 
+const updateD14 = async(values)=>{
+    const conn = await connect();
+    await conn.query("TRUNCATE docspro.d14");
+    await conn.query(`INSERT INTO docspro.d14 (
+        filial, 
+        local,
+        ender,
+        produt,
+        lotect,
+        dtvald,
+        dtfabr,
+        estfis,
+        qtdest,
+        qtdepr,
+        qtdspr,
+        qtdblq,
+        idunit
+    ) VALUES ?`, [values]);
+    conn.end();
+}
+
+const updateDcf = async(values)=>{
+    const conn = await connect();
+    await conn.query("TRUNCATE docspro.dcf");
+    await conn.query(`INSERT INTO docspro.dcf (
+        filial, 
+        lotect,
+        servic,
+        docto,
+        serie,
+        codpro,
+        clifor,
+        loja,
+        quant,
+        qtdori,
+        local,
+        ender,
+        locdes,
+        enddes,
+        stserver
+    ) VALUES ?`, [values]);
+    conn.end();
+}
+
+const updateSe4 = async(values)=>{
+    const conn = await connect();
+    await conn.query("TRUNCATE docspro.se4");
+    await conn.query(`INSERT INTO docspro.se4 (
+        filial, 
+        codigo,
+        tipo,
+        cond,
+        descri
+    ) VALUES ?`, [values]);
+    conn.end();
+}
+
 
 module.exports = {
     all,
     create,
+    get,
     updateAcy,
-    getAcy,
-    getD12,
-    updateD12
+    updateD12,
+    updateD14,
+    updateDcf,
+    updateSe4
 };
