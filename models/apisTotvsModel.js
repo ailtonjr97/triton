@@ -131,6 +131,44 @@ const updateSe4 = async(values)=>{
     conn.end();
 }
 
+const updateSb1 = async(values)=>{
+    const conn = await connect();
+    await conn.query("TRUNCATE docspro.sb1");
+    await conn.query(`INSERT INTO docspro.sb1 (
+        cod, 
+        tipo,
+        um,
+        grupo,
+        peso,
+        urev,
+        descri,
+        pesbru
+    ) VALUES ?`, [values]);
+    conn.end();
+}
+
+const updateSa1 = async(values)=>{
+    const conn = await connect();
+    await conn.query("TRUNCATE docspro.sa1");
+    await conn.query(`INSERT INTO docspro.sa1 (
+        cod, 
+        nome,
+        cod_mun,
+        mun,
+        nreduz,
+        grpven,
+        loja,
+        end,
+        codpais,
+        est,
+        cep,
+        tipo,
+        cgc,
+        filial,
+        xcartei
+    ) VALUES ?`, [values]);
+    conn.end();
+}
 
 module.exports = {
     all,
@@ -140,5 +178,7 @@ module.exports = {
     updateD12,
     updateD14,
     updateDcf,
-    updateSe4
+    updateSe4,
+    updateSb1,
+    updateSa1
 };

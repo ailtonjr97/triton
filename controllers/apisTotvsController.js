@@ -199,6 +199,79 @@ router.post("/api/se4/update", async(req, res)=>{
     }
 })
 
+router.get("/api/sb1/get_all", async(req, res)=>{
+    try {
+        res.send(await ApisTotvs.get("sb1"));
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+})
 
+router.post("/api/sb1/update", async(req, res)=>{
+    try {
+        const values = [];
+        const limitador = await axios.get(process.env.APITOTVS + "CONSULTA_PRO/get_all", {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        const response = await axios.get(process.env.APITOTVS + "CONSULTA_PRO/get_all?limit=" + limitador.data.meta.total, {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        response.data.objects.forEach(response => {
+            values.push([
+                response.cod,
+                response.tipo,
+                response.um,
+                response.grupo,
+                response.peso,
+                response.urev,
+                response.descri,
+                response.pesbru
+            ])
+        });
+        await ApisTotvs.updateSb1(values);
+        res.sendStatus(200);
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+})
+
+router.get("/api/sa1/get_all", async(req, res)=>{
+    try {
+        res.send(await ApisTotvs.get("sa1"));
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+})
+
+router.post("/api/sa1/update", async(req, res)=>{
+    try {
+        const values = [];
+        const limitador = await axios.get(process.env.APITOTVS + "CONSULTA_SA1/get_all", {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        const response = await axios.get(process.env.APITOTVS + "CONSULTA_SA1/get_all?limit=" + limitador.data.meta.total, {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        response.data.objects.forEach(response => {
+            values.push([
+                response.cod,
+                response.nome,
+                response.cod_mun,
+                response.mun,
+                response.nreduz,
+                response.grpven,
+                response.loja,
+                response.end,
+                response.codpais,
+                response.est,
+                response.cep,
+                response.tipo,
+                response.cgc,
+                response.filial,
+                response.xcartei
+            ])
+        });
+        await ApisTotvs.updateSa1(values);
+        res.sendStatus(200);
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+})
 
 module.exports = router;
