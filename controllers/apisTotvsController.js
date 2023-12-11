@@ -34,8 +34,8 @@ router.get("/api/acy/get_all", async(req, res)=>{
 router.post("/api/acy/update", async(req, res)=>{
     try {
         const values = [];
-        const limitador = await axios.get(process.env.APITOTVS + "CONSULTA_ACY/get_all", {auth: {username: process.env.USER, password: process.env.SENHAPITOTVS}});
-        const response = await axios.get(process.env.APITOTVS + "CONSULTA_ACY/get_all?limit=" + limitador.data.meta.total, {auth: {username: process.env.USER, password: process.env.SENHAPITOTVS}});
+        const limitador = await axios.get(process.env.APITOTVS + "CONSULTA_ACY/get_all", {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        const response = await axios.get(process.env.APITOTVS + "CONSULTA_ACY/get_all?limit=" + limitador.data.meta.total, {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
         response.data.objects.forEach(response => {
             values.push([response.grpven, response.descri]) 
         });
@@ -59,8 +59,8 @@ router.get("/api/d12/get_all", async(req, res)=>{
 router.post("/api/d12/update", async(req, res)=>{
     try {
         const values = [];
-        const limitador = await axios.get(process.env.APITOTVS + "CONSULTA_D12/get_all", {auth: {username: process.env.USER, password: process.env.SENHAPITOTVS}});
-        const response = await axios.get(process.env.APITOTVS + "CONSULTA_D12/get_all?limit=" + limitador.data.meta.total, {auth: {username: process.env.USER, password: process.env.SENHAPITOTVS}});
+        const limitador = await axios.get(process.env.APITOTVS + "CONSULTA_D12/get_all", {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        const response = await axios.get(process.env.APITOTVS + "CONSULTA_D12/get_all?limit=" + limitador.data.meta.total, {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
         response.data.objects.forEach(response => {
             values.push([
                 response.filial,
@@ -100,8 +100,8 @@ router.get("/api/d14/get_all", async(req, res)=>{
 router.post("/api/d14/update", async(req, res)=>{
     try {
         const values = [];
-        const limitador = await axios.get(process.env.APITOTVS + "CONSULTA_D14/get_all", {auth: {username: process.env.USER, password: process.env.SENHAPITOTVS}});
-        const response = await axios.get(process.env.APITOTVS + "CONSULTA_D14/get_all?limit=" + limitador.data.meta.total, {auth: {username: process.env.USER, password: process.env.SENHAPITOTVS}});
+        const limitador = await axios.get(process.env.APITOTVS + "CONSULTA_D14/get_all", {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        const response = await axios.get(process.env.APITOTVS + "CONSULTA_D14/get_all?limit=" + limitador.data.meta.total, {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
         response.data.objects.forEach(response => {
             values.push([
                 response.filial,
@@ -139,8 +139,8 @@ router.get("/api/dcf/get_all", async(req, res)=>{
 router.post("/api/dcf/update", async(req, res)=>{
     try {
         const values = [];
-        const limitador = await axios.get(process.env.APITOTVS + "CONSULTA_DCF/get_all", {auth: {username: process.env.USER, password: process.env.SENHAPITOTVS}});
-        const response = await axios.get(process.env.APITOTVS + "CONSULTA_DCF/get_all?limit=" + limitador.data.meta.total, {auth: {username: process.env.USER, password: process.env.SENHAPITOTVS}});
+        const limitador = await axios.get(process.env.APITOTVS + "CONSULTA_DCF/get_all", {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        const response = await axios.get(process.env.APITOTVS + "CONSULTA_DCF/get_all?limit=" + limitador.data.meta.total, {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
         response.data.objects.forEach(response => {
             values.push([
                 response.filial,
@@ -180,8 +180,8 @@ router.get("/api/se4/get_all", async(req, res)=>{
 router.post("/api/se4/update", async(req, res)=>{
     try {
         const values = [];
-        const limitador = await axios.get(process.env.APITOTVS + "CONSULTA_SE4/get_all", {auth: {username: process.env.USER, password: process.env.SENHAPITOTVS}});
-        const response = await axios.get(process.env.APITOTVS + "CONSULTA_SE4/get_all?limit=" + limitador.data.meta.total, {auth: {username: process.env.USER, password: process.env.SENHAPITOTVS}});
+        const limitador = await axios.get(process.env.APITOTVS + "CONSULTA_SE4/get_all", {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        const response = await axios.get(process.env.APITOTVS + "CONSULTA_SE4/get_all?limit=" + limitador.data.meta.total, {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
         response.data.objects.forEach(response => {
             values.push([
                 response.filial,
