@@ -274,4 +274,45 @@ router.post("/api/sa1/update", async(req, res)=>{
     }
 })
 
+router.get("/api/sc5/get_all", async(req, res)=>{
+    try {
+        res.send(await ApisTotvs.get("sc5"));
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+})
+
+router.post("/api/sc5/update", async(req, res)=>{
+    try {
+        const values = [];
+        const limitador = await axios.get(process.env.APITOTVS + "CONSULTA_SC5/get_all", {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        const response = await axios.get(process.env.APITOTVS + "CONSULTA_SC5/get_all?limit=" + limitador.data.meta.total, {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        response.data.objects.forEach(response => {
+            values.push([
+                response.nota,
+                response.tpfrete,
+                response.condpag,
+                response.tipocli,
+                response.blq,
+                response.liberok,
+                response.lojacli,
+                response.vend1,
+                response.cliente,
+                response.tipo,
+                response.num,
+                response.emissao,
+                response.xflagtr,
+                response.filial,
+                response.xpedtr
+            ])
+        });
+        await ApisTotvs.updateSc5(values);
+        res.sendStatus(200);
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+})
+
 module.exports = router;

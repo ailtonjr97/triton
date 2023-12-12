@@ -170,6 +170,30 @@ const updateSa1 = async(values)=>{
     conn.end();
 }
 
+const updateSc5 = async(values)=>{
+    const conn = await connect();
+    await conn.query("TRUNCATE docspro.sc5");
+    await conn.query(`INSERT INTO docspro.sc5(
+        nota, 
+        tpfrete,
+        condpag,
+        tipocli,
+        blq,
+        liberok,
+        lojacli,
+        vend1,
+        cliente,
+        tipo,
+        num,
+        emissao,
+        xflagtr,
+        filial,
+        xpedtr
+    ) VALUES ?`, [values]);
+    conn.end();
+}
+
+
 module.exports = {
     all,
     create,
@@ -180,5 +204,6 @@ module.exports = {
     updateDcf,
     updateSe4,
     updateSb1,
-    updateSa1
+    updateSa1,
+    updateSc5
 };
