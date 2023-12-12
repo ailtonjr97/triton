@@ -193,6 +193,84 @@ const updateSc5 = async(values)=>{
     conn.end();
 }
 
+const updateSc6 = async(values)=>{
+    const conn = await connect();
+    await conn.query("TRUNCATE docspro.sc6");
+    await conn.query(`INSERT INTO docspro.sc6(
+        loja,
+        num,
+        item,
+        produto,
+        qtdven,
+        qtdent,
+        prcven,
+        descont,
+        valor,
+        oper,
+        tes,
+        cf,
+        cli,
+        entreg,
+        datfat,
+        nota,
+        blq,
+        filial
+    ) VALUES ?`, [values]);
+    conn.end();
+}
+
+const updateSc9 = async(values)=>{
+    const conn = await connect();
+    await conn.query("TRUNCATE docspro.sc9");
+    await conn.query(`INSERT INTO docspro.sc9(
+        filial,
+        pedido,
+        item,
+        cliente,
+        loja,
+        produto,
+        qtdlib,
+        nfiscal,
+        datalib,
+        bloquei,
+        blest,
+        datent
+    ) VALUES ?`, [values]);
+    conn.end();
+}
+
+const updateSf2 = async(values)=>{
+    const conn = await connect();
+    await conn.query("TRUNCATE docspro.sf2");
+    await conn.query(`INSERT INTO docspro.sf2(
+        emissao,
+        filial,
+        chvnfe,
+        doc,
+        serie,
+        cliente,
+        loja,
+        tipocli,
+        vend1,
+        fimp
+    ) VALUES ?`, [values]);
+    conn.end();
+}
+
+const updateSx5 = async(values)=>{
+    const conn = await connect();
+    await conn.query("TRUNCATE docspro.sx5");
+    await conn.query(`INSERT INTO docspro.sx5(
+        filial,
+        tabela,
+        chave,
+        descri,
+        descspa,
+        desceng
+    ) VALUES ?`, [values]);
+    conn.end();
+}
+
 
 module.exports = {
     all,
@@ -205,5 +283,9 @@ module.exports = {
     updateSe4,
     updateSb1,
     updateSa1,
-    updateSc5
+    updateSc5,
+    updateSc6,
+    updateSc9,
+    updateSf2,
+    updateSx5
 };

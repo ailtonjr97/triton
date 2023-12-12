@@ -315,4 +315,154 @@ router.post("/api/sc5/update", async(req, res)=>{
     }
 })
 
+router.get("/api/sc6/get_all", async(req, res)=>{
+    try {
+        res.send(await ApisTotvs.get("sc6"));
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+})
+
+router.post("/api/sc6/update", async(req, res)=>{
+    try {
+        const values = [];
+        const limitador = await axios.get(process.env.APITOTVS + "CONSULTA_SC6/get_all", {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        const response = await axios.get(process.env.APITOTVS + "CONSULTA_SC6/get_all?limit=" + limitador.data.meta.total, {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        response.data.objects.forEach(response => {
+            values.push([
+                response.loja,
+                response.num,
+                response.item,
+                response.produto,
+                response.qtdven,
+                response.qtdent,
+                response.prcven,
+                response.descont,
+                response.valor,
+                response.oper,
+                response.tes,
+                response.cf,
+                response.cli,
+                response.entreg,
+                response.datfat,
+                response.nota,
+                response.blq,
+                response.filial
+            ])
+        });
+        await ApisTotvs.updateSc6(values);
+        res.sendStatus(200);
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+})
+
+router.get("/api/sc9/get_all", async(req, res)=>{
+    try {
+        res.send(await ApisTotvs.get("sc9"));
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+})
+
+router.post("/api/sc9/update", async(req, res)=>{
+    try {
+        const values = [];
+        const limitador = await axios.get(process.env.APITOTVS + "CONSULTA_SC9/get_all", {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        const response = await axios.get(process.env.APITOTVS + "CONSULTA_SC9/get_all?limit=" + limitador.data.meta.total, {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        response.data.objects.forEach(response => {
+            values.push([
+                response.filial,
+                response.pedido,
+                response.item,
+                response.cliente,
+                response.loja,
+                response.produto,
+                response.qtdlib,
+                response.nfiscal,
+                response.datalib,
+                response.bloquei,
+                response.blest,
+                response.datent
+            ])
+        });
+        await ApisTotvs.updateSc9(values);
+        res.sendStatus(200);
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+})
+
+router.get("/api/sf2/get_all", async(req, res)=>{
+    try {
+        res.send(await ApisTotvs.get("sf2"));
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+})
+
+router.post("/api/sf2/update", async(req, res)=>{
+    try {
+        const values = [];
+        const limitador = await axios.get(process.env.APITOTVS + "CONSULTA_SF2/get_all", {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        const response = await axios.get(process.env.APITOTVS + "CONSULTA_SF2/get_all?limit=" + limitador.data.meta.total, {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        response.data.objects.forEach(response => {
+            values.push([
+                response.emissao,
+                response.filial,
+                response.chvnfe,
+                response.doc,
+                response.serie,
+                response.cliente,
+                response.loja,
+                response.tipocli,
+                response.vend1,
+                response.fimp
+            ])
+        });
+        await ApisTotvs.updateSf2(values);
+        res.sendStatus(200);
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+})
+
+router.get("/api/sx5/get_all", async(req, res)=>{
+    try {
+        res.send(await ApisTotvs.get("sx5"));
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+})
+
+router.post("/api/sx5/update", async(req, res)=>{
+    try {
+        const values = [];
+        const limitador = await axios.get(process.env.APITOTVS + "CONSULTA_X5/get_all", {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        const response = await axios.get(process.env.APITOTVS + "CONSULTA_X5/get_all?limit=" + limitador.data.meta.total, {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        response.data.objects.forEach(response => {
+            values.push([
+                response.filial,
+                response.tabela,
+                response.chave,
+                response.descri,
+                response.descspa,
+                response.desceng
+            ])
+        });
+        await ApisTotvs.updateSx5(values);
+        res.sendStatus(200);
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+})
+
 module.exports = router;
