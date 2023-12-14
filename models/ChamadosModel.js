@@ -56,10 +56,14 @@ const one = async(id)=>{
         operacoes.descricao as 'operacoes',
         status_chamados.descricao as 'status',
         urgencias.descricao as 'urgencias',
-        u_designado.name as 'designado'
+        u_designado.name as 'designadoName',
+        chamados.designado_id as 'designadoId',
+        u_requisitante.name as 'requisitante',
+        chamados.usuario_id as 'requisitanteId'
         from chamados
         inner join users on chamados.usuario_id = users.id
         inner join users as u_designado on chamados.designado_id = u_designado.id
+        inner join users as u_requisitante on chamados.usuario_id = u_requisitante.id
         inner join chamado_setors on chamados.chamado_setor_id = chamado_setors.id
         inner join areas_atuacaos on chamados.area_id = areas_atuacaos.id
         inner join operacoes on chamados.operacao_id = operacoes.id
@@ -71,7 +75,43 @@ const one = async(id)=>{
     return rows;
 }
 
+const requisitante = async()=>{
+    const conn = await connect();
+    const [rows] = await conn.query(`
+        select id, name, setor_chamados from users where active = 1
+    `);
+    conn.end();
+    return rows;
+}
+
+const designado = async(id)=>{
+    const conn = await connect();
+    const [rows] = await conn.query(`
+        select id, name from users where department_id = ${id} and active = 1
+    `);
+    conn.end();
+    return rows;
+}
+
+const update = async(body, id)=>{
+    const conn = await connect();
+    if(typeof body.designado_id == "object"){
+        await conn.query(`
+            UPDATE chamados SET usuario_id = ?, designado_id = 0 WHERE id = ?`,
+        [body.usuario_id, id]);
+        conn.end();
+    }else{
+        await conn.query(`
+            UPDATE chamados SET usuario_id = ?, designado_id = ? WHERE id = ?`,
+        [body.usuario_id, body.designado_id, id]);
+        conn.end();
+    }
+}
+
 module.exports = {
     all,
-    one
+    one,
+    requisitante,
+    update,
+    designado
 };
