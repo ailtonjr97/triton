@@ -48,4 +48,13 @@ router.get("/designado/:id", async(req, res)=>{
     }
 });
 
+router.get("/setores", async(req, res)=>{
+    try {
+        res.json(await Chamados.setores())
+    } catch (error) {
+        console.log(error)
+        res.sendStatus(500)
+    }
+});
+
 module.exports = router;

@@ -56,10 +56,11 @@ const one = async(id)=>{
         operacoes.descricao as 'operacoes',
         status_chamados.descricao as 'status',
         urgencias.descricao as 'urgencias',
-        u_designado.name as 'designadoName',
-        chamados.designado_id as 'designadoId',
-        u_requisitante.name as 'requisitante',
-        chamados.usuario_id as 'requisitanteId'
+        u_designado.name as 'designadoName', chamados.designado_id as 'designadoId',
+        u_requisitante.name as 'requisitante', chamados.usuario_id as 'requisitanteId',
+        chamados.nivel, chamados.impacto,
+        chamados.data_agenda, chamados.hora_agenda,
+        chamados.chamado_setor_id as 'setorId'
         from chamados
         inner join users on chamados.usuario_id = users.id
         inner join users as u_designado on chamados.designado_id = u_designado.id
@@ -93,17 +94,26 @@ const designado = async(id)=>{
     return rows;
 }
 
+const setores = async(id)=>{
+    const conn = await connect();
+    const [rows] = await conn.query(`
+        select id, descricao from chamado_setors where ativo = 1
+    `);
+    conn.end();
+    return rows;
+}
+
 const update = async(body, id)=>{
     const conn = await connect();
     if(typeof body.designado_id == "object"){
         await conn.query(`
-            UPDATE chamados SET usuario_id = ?, designado_id = 0 WHERE id = ?`,
-        [body.usuario_id, id]);
+            UPDATE chamados SET usuario_id = ?, designado_id = 0, chamado_setor_id = ? WHERE id = ?`,
+        [body.usuario_id, body.chamado_setor_id, id]);
         conn.end();
     }else{
         await conn.query(`
-            UPDATE chamados SET usuario_id = ?, designado_id = ? WHERE id = ?`,
-        [body.usuario_id, body.designado_id, id]);
+            UPDATE chamados SET usuario_id = ?, designado_id = ?, chamado_setor_id = ? WHERE id = ?`,
+        [body.usuario_id, body.designado_id, body.chamado_setor_id, id]);
         conn.end();
     }
 }
@@ -113,5 +123,6 @@ module.exports = {
     one,
     requisitante,
     update,
-    designado
+    designado,
+    setores
 };
