@@ -57,4 +57,31 @@ router.get("/setores", async(req, res)=>{
     }
 });
 
+router.get("/areas/:setor_chamado", async(req, res)=>{
+    try {
+        res.json(await Chamados.areas(req.params.setor_chamado))
+    } catch (error) {
+        console.log(error)
+        res.sendStatus(500)
+    }
+});
+
+router.get("/tipos/:area_id", async(req, res)=>{
+    try {
+        res.json(await Chamados.tipos(req.params.area_id))
+    } catch (error) {
+        console.log(error)
+        res.sendStatus(500)
+    }
+});
+
+router.get("/urgencias", async(req, res)=>{
+    try {
+        res.json(await Chamados.urgencias())
+    } catch (error) {
+        console.log(error)
+        res.sendStatus(500)
+    }
+});
+
 module.exports = router;

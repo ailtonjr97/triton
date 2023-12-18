@@ -52,10 +52,10 @@ const one = async(id)=>{
     const conn = await connect();
     const [rows] = await conn.query(`
         select chamado_setors.descricao as 'setor',
-        areas_atuacaos.descricao as 'area',
-        operacoes.descricao as 'operacoes',
+        areas_atuacaos.descricao as 'area', chamados.area_id as 'areaId',
+        operacoes.descricao as 'operacoes', chamados.operacao_id as 'tipoId',
         status_chamados.descricao as 'status',
-        urgencias.descricao as 'urgencias',
+        urgencias.descricao as 'urgencias', chamados.urgencia_id as 'urgenciaId',
         u_designado.name as 'designadoName', chamados.designado_id as 'designadoId',
         u_requisitante.name as 'requisitante', chamados.usuario_id as 'requisitanteId',
         chamados.nivel, chamados.impacto,
@@ -103,17 +103,64 @@ const setores = async(id)=>{
     return rows;
 }
 
+const areas = async(id)=>{
+    const conn = await connect();
+    const [rows] = await conn.query(`
+        select id, descricao from areas_atuacaos where chamado_setor_id = ${id}
+    `);
+    conn.end();
+    return rows;
+}
+
+const tipos = async(id)=>{
+    const conn = await connect();
+    const [rows] = await conn.query(`
+        select id, descricao from operacoes where area_id = ${id}
+    `);
+    conn.end();
+    return rows;
+}
+
+const urgencias = async()=>{
+    const conn = await connect();
+    const [rows] = await conn.query(`
+        select id, descricao from urgencias
+    `);
+    conn.end();
+    return rows;
+}
+
 const update = async(body, id)=>{
     const conn = await connect();
     if(typeof body.designado_id == "object"){
         await conn.query(`
-            UPDATE chamados SET usuario_id = ?, designado_id = 0, chamado_setor_id = ? WHERE id = ?`,
-        [body.usuario_id, body.chamado_setor_id, id]);
+            UPDATE chamados SET usuario_id = ?, 
+            designado_id = 0, 
+            chamado_setor_id = ?, 
+            area_id = ?, 
+            operacao_id = ?,
+            data_agenda = ?,
+            hora_agenda = ?,
+            nivel = ?,
+            impacto = ?,
+            urgencia_id = ?
+            WHERE id = ?`,
+        [body.usuario_id, body.chamado_setor_id, body.area_id, body.operacao_id, body.data_agenda, body.hora_agenda, body.nivel, body.impacto, body.urgencia_id, id]);
         conn.end();
     }else{
         await conn.query(`
-            UPDATE chamados SET usuario_id = ?, designado_id = ?, chamado_setor_id = ? WHERE id = ?`,
-        [body.usuario_id, body.designado_id, body.chamado_setor_id, id]);
+            UPDATE chamados SET usuario_id = ?, 
+            designado_id = ?, 
+            chamado_setor_id = ?, 
+            area_id = ?, 
+            operacao_id = ?,
+            data_agenda = ?,
+            hora_agenda = ?,
+            nivel = ?,
+            impacto = ?,
+            urgencia_id = ?
+            WHERE id = ?`,
+        [body.usuario_id, body.designado_id, body.chamado_setor_id, body.area_id, body.operacao_id, body.data_agenda, body.hora_agenda, body.nivel, body.impacto, body.urgencia_id, id]);
         conn.end();
     }
 }
@@ -124,5 +171,8 @@ module.exports = {
     requisitante,
     update,
     designado,
-    setores
+    setores,
+    areas,
+    tipos,
+    urgencias
 };
