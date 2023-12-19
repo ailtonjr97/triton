@@ -433,6 +433,15 @@ router.post("/api/sf2/update", async(req, res)=>{
     }
 })
 
+router.get("/api/sx5", async(req, res)=>{
+    try {
+        res.send(await ApisTotvs.getSx5(req.query.tabela, req.query.chave));
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+})
+
 router.get("/api/sx5/get_all", async(req, res)=>{
     try {
         res.send(await ApisTotvs.get("sx5"));

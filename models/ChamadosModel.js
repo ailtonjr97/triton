@@ -165,6 +165,45 @@ const update = async(body, id)=>{
     }
 }
 
+const fechar = async(body, id)=>{
+    const conn = await connect();
+    if(typeof body.designado_id == "object"){
+        await conn.query(`
+            UPDATE chamados SET usuario_id = ?, 
+            designado_id = 0, 
+            chamado_setor_id = ?, 
+            area_id = ?, 
+            operacao_id = ?,
+            data_agenda = ?,
+            hora_agenda = ?,
+            nivel = ?,
+            impacto = ?,
+            urgencia_id = ?,
+            definicao = ?,
+            status = 3
+            WHERE id = ?`,
+        [body.usuario_id, body.chamado_setor_id, body.area_id, body.operacao_id, body.data_agenda, body.hora_agenda, body.nivel, body.impacto, body.urgencia_id, body.definicao, id]);
+        conn.end();
+    }else{
+        await conn.query(`
+            UPDATE chamados SET usuario_id = ?, 
+            designado_id = ?, 
+            chamado_setor_id = ?, 
+            area_id = ?, 
+            operacao_id = ?,
+            data_agenda = ?,
+            hora_agenda = ?,
+            nivel = ?,
+            impacto = ?,
+            urgencia_id = ?,
+            definicao = ?,
+            status = 3
+            WHERE id = ?`,
+        [body.usuario_id, body.designado_id, body.chamado_setor_id, body.area_id, body.operacao_id, body.data_agenda, body.hora_agenda, body.nivel, body.impacto, body.urgencia_id, body.definicao, id]);
+        conn.end();
+    }
+}
+
 module.exports = {
     all,
     one,
@@ -174,5 +213,6 @@ module.exports = {
     setores,
     areas,
     tipos,
-    urgencias
+    urgencias,
+    fechar
 };

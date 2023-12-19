@@ -257,6 +257,33 @@ const updateSf2 = async(values)=>{
     conn.end();
 }
 
+//API exclusiva para o Volmar consultar a SX5 com parametro
+const getSx5 = async(tabela, chave)=>{
+    if(tabela == undefined){
+        tabela = '';
+        const conn = await connect();
+        const [rows] = await conn.query(`select * from sx5 s where tabela like '%${tabela}%' and chave like '%${chave}%'`);
+        conn.end();
+        return rows;
+    }else if(chave == undefined){
+        chave = '';
+        const conn = await connect();
+        const [rows] = await conn.query(`select * from sx5 s where tabela like '%${tabela}%' and chave like '%${chave}%'`);
+        conn.end();
+        return rows;
+    }else if(tabela == undefined && chave == undefined){
+        const conn = await connect();
+        const [rows] = await conn.query(`select * from sx5 s where tabela like '%${tabela}%' and chave like '%${chave}%'`);
+        conn.end();
+        return rows;
+    }else{
+        const conn = await connect();
+        const [rows] = await conn.query(`select * from sx5 s where tabela like '%${tabela}%' and chave like '%${chave}%'`);
+        conn.end();
+        return rows;
+    }
+}
+
 const updateSx5 = async(values)=>{
     const conn = await connect();
     await conn.query("TRUNCATE docspro.sx5");
@@ -287,5 +314,6 @@ module.exports = {
     updateSc6,
     updateSc9,
     updateSf2,
-    updateSx5
+    updateSx5,
+    getSx5
 };
