@@ -130,6 +130,15 @@ const urgencias = async()=>{
     return rows;
 }
 
+const chat = async(chamado_id)=>{
+    const conn = await connect();
+    const [rows] = await conn.query(`
+        select chamado_id, descricao, usuario_id from chat_chamados where chamado_id = ${chamado_id}
+    `);
+    conn.end();
+    return rows;
+}
+
 const update = async(body, id)=>{
     const conn = await connect();
     if(typeof body.designado_id == "object"){
@@ -214,5 +223,6 @@ module.exports = {
     areas,
     tipos,
     urgencias,
-    fechar
+    fechar,
+    chat
 };

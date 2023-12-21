@@ -88,4 +88,13 @@ router.get("/urgencias", async(req, res)=>{
     }
 });
 
+router.get("/chat/:chamado_id", async(req, res)=>{
+    try {
+        res.json(await Chamados.chat(req.params.chamado_id));
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
 module.exports = router;
