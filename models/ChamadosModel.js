@@ -230,5 +230,4 @@ module.exports = {
     urgencias,
     fechar,
     chat,
-    chatNaoLido
 };

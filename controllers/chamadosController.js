@@ -97,13 +97,4 @@ router.get("/chat/:chamado_id", async(req, res)=>{
     }
 });
 
-router.get("/chat-lido/:chamado_id", async(req, res)=>{
-    try {
-        res.json(await Chamados.chatNaoLido(req.params.chamado_id));
-    } catch (error) {
-        console.log(error);
-        res.sendStatus(500);
-    }
-});
-
 module.exports = router;
