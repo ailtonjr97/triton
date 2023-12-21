@@ -133,7 +133,9 @@ const urgencias = async()=>{
 const chat = async(chamado_id)=>{
     const conn = await connect();
     const [rows] = await conn.query(`
-        select chamado_id, descricao, usuario_id from chat_chamados where chamado_id = ${chamado_id}
+        select chat_chamados.chamado_id, chat_chamados.descricao, chat_chamados.usuario_id, users.name as "userDestino" from chat_chamados
+        inner join users on chat_chamados.usuario_id = users.id
+        where chamado_id = ${chamado_id}
     `);
     conn.end();
     return rows;
