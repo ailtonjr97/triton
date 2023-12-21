@@ -30,18 +30,21 @@ const all = async(setor, designado)=>{
     chamados.descricao,
     areas_atuacaos.descricao as 'area',
     operacoes.descricao as 'operacoes',
-    chamados.urgencia_id as 'urgencia'
+    chamados.urgencia_id as 'urgencia',
+    count(chat_chamados.lido) as "contagem"
     from chamados
     inner join users on chamados.usuario_id = users.id
     inner join users as u_designado on chamados.designado_id = u_designado.id
     inner join areas_atuacaos on chamados.area_id = areas_atuacaos.id
     inner join operacoes on chamados.operacao_id = operacoes.id
+    left join chat_chamados on chamados.id = chat_chamados.chamado_id and chat_chamados.lido = 0
     where chamados.status not in (6, 3) and
     chamados.chamado_setor_id = ${setor} and
     chamados.designado_id in(${designado}, 0) and
     chamados.ativo = 's' and
     chamados.operacao_id not in (13, 15) and 
     terceiro_id IS NULL
+    group by chamados.id, chamados.descricao 
     order by chamados.id desc
     `);
     conn.end();
@@ -133,7 +136,7 @@ const urgencias = async()=>{
 const chat = async(chamado_id)=>{
     const conn = await connect();
     const [rows] = await conn.query(`
-        select chat_chamados.chamado_id, chat_chamados.descricao, chat_chamados.usuario_id, users.name as "userDestino" from chat_chamados
+        select chat_chamados.chamado_id, chat_chamados.descricao, chat_chamados.usuario_id, users.name as "userDestino", chat_chamados.lido from chat_chamados
         inner join users on chat_chamados.usuario_id = users.id
         where chamado_id = ${chamado_id}
     `);
@@ -226,5 +229,6 @@ module.exports = {
     tipos,
     urgencias,
     fechar,
-    chat
+    chat,
+    chatNaoLido
 };
