@@ -31,13 +31,15 @@ const all = async(setor, designado)=>{
     areas_atuacaos.descricao as 'area',
     operacoes.descricao as 'operacoes',
     chamados.urgencia_id as 'urgencia',
-    count(chat_chamados.lido) as "contagem"
+    count(chat_chamados.lido) as "contagem",
+    empresas.descricao as 'descri_filial'
     from chamados
     inner join users on chamados.usuario_id = users.id
     inner join users as u_designado on chamados.designado_id = u_designado.id
     inner join areas_atuacaos on chamados.area_id = areas_atuacaos.id
     inner join operacoes on chamados.operacao_id = operacoes.id
     left join chat_chamados on chamados.id = chat_chamados.chamado_id and chat_chamados.lido = 0
+    left join empresas on empresas.id = users.empresa_id
     where chamados.status not in (6, 3) and
     chamados.chamado_setor_id = ${setor} and
     chamados.designado_id in(${designado}, 0) and
@@ -63,7 +65,8 @@ const one = async(id)=>{
         u_requisitante.name as 'requisitante', chamados.usuario_id as 'requisitanteId',
         chamados.nivel, chamados.impacto,
         chamados.data_agenda, chamados.hora_agenda,
-        chamados.chamado_setor_id as 'setorId'
+        chamados.chamado_setor_id as 'setorId',
+        chamados.anydesk
         from chamados
         inner join users on chamados.usuario_id = users.id
         inner join users as u_designado on chamados.designado_id = u_designado.id

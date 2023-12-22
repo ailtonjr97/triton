@@ -26,10 +26,10 @@ router.post("/documentos/editarEdp/:id", async(req, res)=>{
     }
 })
 
-router.post("/documentos/editarEdpAnexo/:id", upload.single('edp_anexo'), async(req, res)=>{
+router.post("/documentos/anexos/:id", upload.single('file'), async(req, res)=>{
     try {
-        let nomeArquivo = req.file.filename
-        await Qualidade.edpUpdateAnexo(nomeArquivo, req.params.id)
+        // let nomeArquivo = req.file.filename
+        // await Qualidade.edpUpdateAnexo(nomeArquivo, req.params.id)
         res.sendStatus(200);
     } catch (error) {
         console.log(error)
