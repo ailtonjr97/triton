@@ -174,6 +174,32 @@ const inactivateDocument = async(id)=>{
     conn.end();
 }
 
+const ultimoDocumento = async(id)=>{
+    const conn = await connect();
+    const [rows] = await conn.query(`select id from docspro.docs_qualidade order by id desc limit 1`);
+    conn.end();
+    return rows;
+}
+
+const novoAnexo = async(file, id)=>{
+    const conn = await connect();
+    await conn.query(
+        `INSERT INTO docspro.anexos (
+            fieldname,
+            original_name,
+            encoding,
+            mimetype,
+            destination,
+            filename,
+            path,
+            size,
+            docs_qualidade_id
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [file.fieldname, file.originalname, file.encoding, file.mimetype, file.destination, file.filename, file.path, file.size, id]);
+    conn.end();
+}
+
 module.exports = {
     all,
     one,
@@ -187,5 +213,7 @@ module.exports = {
     inactivateDocument,
     edpUpdateAnexo,
     inactiveDocuments,
-    inactiveDocument
+    inactiveDocument,
+    ultimoDocumento,
+    novoAnexo
 };

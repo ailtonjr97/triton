@@ -16,10 +16,9 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage })
 
-router.post("/documentos/editarEdp/:id", async(req, res)=>{
+router.get("/documentos/ultimo-documento", async(req, res)=>{
     try {
-        await Qualidade.edpUpdate(req.body, req.params.id)
-        res.sendStatus(200);
+        res.json(await Qualidade.ultimoDocumento())
     } catch (error) {
         console.log(error)
         res.sendStatus(500)
@@ -28,8 +27,17 @@ router.post("/documentos/editarEdp/:id", async(req, res)=>{
 
 router.post("/documentos/anexos/:id", upload.single('file'), async(req, res)=>{
     try {
-        // let nomeArquivo = req.file.filename
-        // await Qualidade.edpUpdateAnexo(nomeArquivo, req.params.id)
+        await Qualidade.novoAnexo(req.file, req.params.id)
+        res.sendStatus(200);
+    } catch (error) {
+        console.log(error)
+        res.sendStatus(500)
+    }
+})
+
+router.post("/documentos/editarEdp/:id", async(req, res)=>{
+    try {
+        await Qualidade.edpUpdate(req.body, req.params.id)
         res.sendStatus(200);
     } catch (error) {
         console.log(error)
