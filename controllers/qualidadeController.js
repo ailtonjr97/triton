@@ -28,7 +28,17 @@ router.get("/documentos/ultimo-documento", async(req, res)=>{
 router.post("/documentos/anexos/:id", upload.single('file'), async(req, res)=>{
     try {
         await Qualidade.novoAnexo(req.file, req.params.id)
+        await Qualidade.preencheAnexo(req.params.id)
         res.sendStatus(200);
+    } catch (error) {
+        console.log(error)
+        res.sendStatus(500)
+    }
+})
+
+router.get("/documentos/anexos-lista/:id", upload.single('file'), async(req, res)=>{
+    try {
+        res.json(await Qualidade.listaAnexos(req.params.id))
     } catch (error) {
         console.log(error)
         res.sendStatus(500)

@@ -24,7 +24,7 @@ connect();
 
 const all = async()=>{
     const conn = await connect();
-    const [rows] = await conn.query('SELECT id, tipo_doc, data, inspetor, edp_preenchido, pcp_preenchido, producao_preenchido, qualidade_preenchido, motivo_nc_preenchido, edp_anexo FROM docspro.docs_qualidade WHERE active = 1 ORDER BY id DESC');
+    const [rows] = await conn.query('SELECT id, tipo_doc, data, inspetor, edp_preenchido, pcp_preenchido, producao_preenchido, qualidade_preenchido, motivo_nc_preenchido, anexo FROM docspro.docs_qualidade WHERE active = 1 ORDER BY id DESC');
     conn.end();
     return rows;
 }
@@ -62,7 +62,7 @@ const create = async(body)=>{
             qualidade_preenchido,
             motivo_nc_preenchido,
             active,
-            edp_anexo
+            anexo
         )
         VALUES ('FOR-EDP-025', ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0, 0, 0, 1, '')`,
     [body.data, body.inspetor, body.cod_prod, body.descri, body.lote_odf, body.lance, body.quantidade_metragem, body.cpnc_numero, body.motivo_nc]);
@@ -83,11 +83,11 @@ const edpUpdate = async(body, id)=>{
     conn.end();
 }
 
-const edpUpdateAnexo = async(anexoNome, id)=>{
+const updateAnexo = async(anexoNome, id)=>{
     const conn = await connect();
     await conn.query(`
         UPDATE docspro.docs_qualidade SET
-        edp_anexo = ?
+        anexo = ?
         WHERE id = ?
     `, [anexoNome, id]);
     conn.end();
@@ -181,6 +181,13 @@ const ultimoDocumento = async(id)=>{
     return rows;
 }
 
+const listaAnexos = async(id)=>{
+    const conn = await connect();
+    const [rows] = await conn.query(`select id, original_name, filename from docspro.anexos where docs_qualidade_id = ${id}`);
+    conn.end();
+    return rows;
+}
+
 const novoAnexo = async(file, id)=>{
     const conn = await connect();
     await conn.query(
@@ -200,6 +207,16 @@ const novoAnexo = async(file, id)=>{
     conn.end();
 }
 
+const preencheAnexo = async(id)=>{
+    const conn = await connect();
+    await conn.query(`
+        UPDATE docspro.docs_qualidade SET
+        anexo = 1
+        WHERE id = ?
+    `, [id]);
+    conn.end();
+}
+
 module.exports = {
     all,
     one,
@@ -211,9 +228,11 @@ module.exports = {
     qualidadeUpdate,
     NcUpdate,
     inactivateDocument,
-    edpUpdateAnexo,
+    updateAnexo,
     inactiveDocuments,
     inactiveDocument,
     ultimoDocumento,
-    novoAnexo
+    novoAnexo,
+    listaAnexos,
+    preencheAnexo
 };
