@@ -36,7 +36,7 @@ router.post("/documentos/anexos/:id", upload.single('file'), async(req, res)=>{
     }
 })
 
-router.get("/documentos/anexos-lista/:id", upload.single('file'), async(req, res)=>{
+router.get("/documentos/anexos-lista/:id", async(req, res)=>{
     try {
         res.json(await Qualidade.listaAnexos(req.params.id))
     } catch (error) {

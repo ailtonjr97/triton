@@ -22,6 +22,32 @@ async function connect(){
 
 connect();
 
+const novoAnexo = async(file, id)=>{
+    const conn = await connect();
+    await conn.query(
+        `INSERT INTO docspro.anexos (
+            fieldname,
+            original_name,
+            encoding,
+            mimetype,
+            destination,
+            filename,
+            path,
+            size,
+            entidade_id
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [file.fieldname, file.originalname, file.encoding, file.mimetype, file.destination, file.filename, file.path, file.size, id]);
+    conn.end();
+}
+
+const listaAnexos = async(id)=>{
+    const conn = await connect();
+    const [rows] = await conn.query(`select id, original_name, filename from docspro.anexos where entidade_id = ${id}`);
+    conn.end();
+    return rows;
+}
+
 const all = async()=>{
     const conn = await connect();
     const [rows] = await conn.query(`
@@ -51,5 +77,7 @@ const create = async(body)=>{
 
 module.exports = {
     all,
-    create
+    create,
+    novoAnexo,
+    listaAnexos
 };
