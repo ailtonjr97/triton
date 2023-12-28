@@ -9,13 +9,11 @@ router.post("/login", async(req, res)=>{
     try {
         const userPassword = await Users.passwordReturn(req.body.email);
         const userId = await Users.getUserJwt(req.body.email);
-        if(userPassword != ''){
-            if(bcrypt.compareSync(req.body.password, userPassword[0].password)){
-                const token = jwt.sign({id: userId[0].id}, process.env.JWTSECRET, {expiresIn: 28800})
-                res.send(token)
-            }
+        if(bcrypt.compareSync(req.body.password, userPassword[0].password)){
+            console.log('teste1')
+            const token = jwt.sign({id: userId[0].id}, process.env.JWTSECRET, {expiresIn: 28800})
+            res.send(token)
         }else{
-            console.log('teste')
             res.sendStatus(500)
         }
     } catch (error) {
