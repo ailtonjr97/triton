@@ -15,7 +15,6 @@ router.post("/login", async(req, res)=>{
                 res.send(token)
             }
         }else{
-            console.log('teste')
             res.sendStatus(500)
         }
     } catch (error) {
