@@ -41,6 +41,13 @@ const novoAnexo = async(file, id)=>{
     conn.end();
 }
 
+const entidade = async(id)=>{
+    const conn = await connect();
+    const [rows] = await conn.query(`select * from entidades where id = ${id}`);
+    conn.end();
+    return rows;
+}
+
 const listaAnexos = async(id)=>{
     const conn = await connect();
     const [rows] = await conn.query(`select id, original_name, filename from docspro.anexos where entidade_id = ${id}`);
@@ -75,9 +82,27 @@ const create = async(body)=>{
     conn.end();
 }
 
+const edit = async(body, id)=>{
+    const conn = await connect();
+    await conn.query(`
+        UPDATE docspro.entidades SET
+        natureza = ?,
+        regime = ?,
+        nome = ?,
+        endereco = ?,
+        endereco_numero = ?,
+        bairro = ?,
+        cidade = ?
+        WHERE id = ?
+    `, [body.natureza, body.regime, body.nome, body.endereco, body.endereco_numero, body.bairro, body.cidade, id]);
+    conn.end();
+}
+
 module.exports = {
     all,
     create,
     novoAnexo,
-    listaAnexos
+    listaAnexos,
+    entidade,
+    edit
 };

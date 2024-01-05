@@ -52,6 +52,25 @@ router.post("/documentos/create", async(req, res)=>{
         console.log(error)
         res.sendStatus(500)
     }
-})
+});
+
+router.post("/documentos/editar-entidade/:id", async(req, res)=>{
+    try {
+        await Rh.edit(req.body, req.params.id);
+        res.sendStatus(200);
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
+router.get("/documentos/entidade/:id", async(req, res)=>{
+    try {
+        res.json(await Rh.entidade(req.params.id));
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
 
 module.exports = router;
