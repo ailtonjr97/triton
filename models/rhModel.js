@@ -58,7 +58,16 @@ const listaAnexos = async(id)=>{
 const all = async()=>{
     const conn = await connect();
     const [rows] = await conn.query(`
-        select id, nome from entidades order by id desc
+        select id, nome from entidades where active = 1 order by id desc
+    `);
+    conn.end();
+    return rows;
+}
+
+const inactive = async()=>{
+    const conn = await connect();
+    const [rows] = await conn.query(`
+        select id, nome from entidades where active = 0 order by id desc
     `);
     conn.end();
     return rows;
@@ -92,9 +101,30 @@ const edit = async(body, id)=>{
         endereco = ?,
         endereco_numero = ?,
         bairro = ?,
-        cidade = ?
+        cidade = ?,
+        pais = ?
         WHERE id = ?
-    `, [body.natureza, body.regime, body.nome, body.endereco, body.endereco_numero, body.bairro, body.cidade, id]);
+    `, [body.natureza, body.regime, body.nome, body.endereco, body.endereco_numero, body.bairro, body.cidade, body.pais, id]);
+    conn.end();
+}
+
+const inactivate = async(id)=>{
+    const conn = await connect();
+    await conn.query(`
+        UPDATE docspro.entidades SET
+        active = 0
+        WHERE id = ?
+    `, [id]);
+    conn.end();
+}
+
+const activate = async(id)=>{
+    const conn = await connect();
+    await conn.query(`
+        UPDATE docspro.entidades SET
+        active = 1
+        WHERE id = ?
+    `, [id]);
     conn.end();
 }
 
@@ -104,5 +134,8 @@ module.exports = {
     novoAnexo,
     listaAnexos,
     entidade,
-    edit
+    edit,
+    inactivate,
+    inactive,
+    activate
 };

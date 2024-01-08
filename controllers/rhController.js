@@ -73,4 +73,33 @@ router.get("/documentos/entidade/:id", async(req, res)=>{
     }
 });
 
+router.get("/documentos/inactive", async(req, res)=>{
+    try {
+        res.json(await Rh.inactive());
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
+router.get("/documentos/inativar-entidade/:id", async(req, res)=>{
+    try {
+        await Rh.inactivate(req.params.id)
+        res.sendStatus(200)
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
+router.get("/documentos/ativar-entidade/:id", async(req, res)=>{
+    try {
+        await Rh.activate(req.params.id)
+        res.sendStatus(200)
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
 module.exports = router;
