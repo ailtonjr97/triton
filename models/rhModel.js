@@ -22,8 +22,14 @@ async function connect(){
 
 connect();
 
-const novoAnexo = async(file, id)=>{
+const novoAnexo = async(file, id, body)=>{
     const conn = await connect();
+    if(body.titulo == undefined || body.titulo == null){
+        body.titulo = ''
+    }
+    if(body.descritivo == undefined || body.descritivo == null){
+        body.descritivo = ''
+    }
     await conn.query(
         `INSERT INTO docspro.anexos (
             fieldname,
@@ -34,10 +40,12 @@ const novoAnexo = async(file, id)=>{
             filename,
             path,
             size,
-            entidade_id
+            entidade_id,
+            rh_docs_titulo,
+            rh_docs_descritivo
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    [file.fieldname, file.originalname, file.encoding, file.mimetype, file.destination, file.filename, file.path, file.size, id]);
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [file.fieldname, file.originalname, file.encoding, file.mimetype, file.destination, file.filename, file.path, file.size, id, body.titulo, body.descritivo]);
     conn.end();
 }
 
@@ -50,7 +58,7 @@ const entidade = async(id)=>{
 
 const listaAnexos = async(id)=>{
     const conn = await connect();
-    const [rows] = await conn.query(`select id, original_name, filename from docspro.anexos where entidade_id = ${id}`);
+    const [rows] = await conn.query(`select id, original_name, filename, rh_docs_titulo, rh_docs_descritivo from docspro.anexos where entidade_id = ${id}`);
     conn.end();
     return rows;
 }
@@ -58,7 +66,7 @@ const listaAnexos = async(id)=>{
 const all = async()=>{
     const conn = await connect();
     const [rows] = await conn.query(`
-        select id, nome from entidades where active = 1 order by id desc
+        select id, nome from entidades where active = 1 order by nome asc
     `);
     conn.end();
     return rows;
@@ -84,10 +92,12 @@ const create = async(body)=>{
             endereco_numero, 
             bairro, 
             cidade, 
-            pais
+            pais,
+            active,
+            email
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-    [body.natureza, body.regime, body.nome, body.endereco, body.endereco_numero, body.bairro, body.cidade, body.pais]);
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, ?)`,
+    [body.natureza, body.regime, body.nome, body.endereco, body.endereco_numero, body.bairro, body.cidade, body.pais, body.email]);
     conn.end();
 }
 
@@ -102,9 +112,10 @@ const edit = async(body, id)=>{
         endereco_numero = ?,
         bairro = ?,
         cidade = ?,
-        pais = ?
+        pais = ?,
+        email = ?
         WHERE id = ?
-    `, [body.natureza, body.regime, body.nome, body.endereco, body.endereco_numero, body.bairro, body.cidade, body.pais, id]);
+    `, [body.natureza, body.regime, body.nome, body.endereco, body.endereco_numero, body.bairro, body.cidade, body.pais, body.email, id]);
     conn.end();
 }
 
