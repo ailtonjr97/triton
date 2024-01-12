@@ -108,7 +108,6 @@ router.get("/documentos/email/:email/:documento", async(req, res)=>{
         const transporter = nodemailer.createTransport({
             host: "outlook.maiex13.com.br",
             port: 587,
-            //secure: true,
             auth: {
               user: "suporte@fibracem.com",
               pass: "Fibracem@2021",
@@ -125,7 +124,7 @@ router.get("/documentos/email/:email/:documento", async(req, res)=>{
         transporter.sendMail(mailOptions, function(err, data) {
             if (err) {
                 res.sendStatus(500);
-                console.log(err)
+                console.log(err);
             } else {
                 res.sendStatus(200);
             }
