@@ -25,12 +25,20 @@ const all = async()=>{
 
 const search = async(codigo, resultados)=>{
     await sql.connect(sqlConfig);
-    const estoqueQuery = `SELECT TOP (${resultados}) ID, CODIGO, DESCRI FROM ESTOQUE WHERE CODIGO LIKE '%${codigo}%'`;
+    const estoqueQuery = `SELECT TOP (${resultados}) CODIGO, DESCRI FROM ESTOQUE WHERE CODIGO LIKE '%${codigo}%' ORDER BY CODIGO`;
     const estoque = await sql.query(estoqueQuery);
     return estoque.recordset;
 }
 
+const product = async(codigo)=>{
+  await sql.connect(sqlConfig);
+  const productQuery = `SELECT * FROM ESTOQUE WHERE CODIGO = '${codigo}'`;
+  const product = await sql.query(productQuery);
+  return product.recordset;
+}
+
 module.exports = {
     all,
-    search
+    search,
+    product
 };

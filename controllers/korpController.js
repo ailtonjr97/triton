@@ -27,4 +27,13 @@ router.get("/produtos/pesquisa", async(req, res)=>{
     }
 });
 
+router.get("/produto/:codigo", async(req, res)=>{
+    try {
+        res.json(await korpModel.product(req.params.codigo));
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
 module.exports = router;
