@@ -110,7 +110,7 @@ router.get("/documentos/email/:email/:documento", async(req, res)=>{
             port: 587,
             auth: {
               user: "suporte@fibracem.com",
-              pass: "Fibracem@2021",
+              pass: process.env.SUPORTEPASSWORD,
             },
           });
 

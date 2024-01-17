@@ -39,28 +39,28 @@ const product = async(codigo)=>{
 
 const allPedidosDeCompra = async()=>{
   await sql.connect(sqlConfig);
-  const estoqueQuery = `SELECT TOP (1000) NDOC, RASSOC, REQUISITANTE FROM PEDIDO_FOR ORDER BY NDOC DESC`;
+  const estoqueQuery = `SELECT TOP (1000) NUMERO_PEDIDO, RASSOC, REQUISITANTE FROM PEDIDO_FOR ORDER BY NUMERO_PEDIDO DESC`;
   const estoque = await sql.query(estoqueQuery);
   return estoque.recordset;
 };
 
 const searchPedidosDeCompra = async(codigo, resultados, rassoc)=>{
   await sql.connect(sqlConfig);
-  const estoqueQuery = `SELECT TOP (${resultados}) NDOC, RASSOC, REQUISITANTE FROM PEDIDO_FOR WHERE NDOC LIKE '%${codigo}%' AND RASSOC LIKE '%${rassoc}%' ORDER BY NDOC DESC`;
+  const estoqueQuery = `SELECT TOP (${resultados}) NUMERO_PEDIDO, RASSOC, REQUISITANTE FROM PEDIDO_FOR WHERE NUMERO_PEDIDO LIKE '%${codigo}%' AND RASSOC LIKE '%${rassoc}%' ORDER BY NUMERO_PEDIDO DESC`;
   const estoque = await sql.query(estoqueQuery);
   return estoque.recordset;
 };
 
 const pedidoDeCompra = async(codigo)=>{
   await sql.connect(sqlConfig);
-  const productQuery = `SELECT * FROM PEDIDO_FOR WHERE NDOC = '${codigo}'`;
+  const productQuery = `SELECT * FROM PEDIDO_FOR WHERE NUMERO_PEDIDO = '${codigo}'`;
   const product = await sql.query(productQuery);
   return product.recordset;
 };
 
 const uncryptObs = async(codigo)=>{
   await sql.connect(sqlConfig);
-  const productQuery = `SELECT CAST(CAST (OBS1 AS varbinary(MAX)) AS VARCHAR(MAX)) as obs FROM PEDIDO_FOR WHERE NDOC = ${codigo}`;
+  const productQuery = `SELECT CAST(CAST (OBS1 AS varbinary(MAX)) AS VARCHAR(MAX)) as obs FROM PEDIDO_FOR WHERE NUMERO_PEDIDO = ${codigo}`;
   const product = await sql.query(productQuery);
   return product.recordset;
 };
