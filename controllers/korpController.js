@@ -20,7 +20,7 @@ router.get("/produtos/pesquisa", async(req, res)=>{
         }else{
             resultados = req.query.resultados
         }
-        res.json(await korpModel.search(req.query.codigo, resultados));
+        res.json(await korpModel.search(req.query.codigo, resultados, req.query.nome));
     } catch (error) {
         console.log(error);
         res.sendStatus(500);

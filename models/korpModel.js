@@ -23,9 +23,9 @@ const all = async()=>{
     return estoque.recordset;
 };
 
-const search = async(codigo, resultados)=>{
+const search = async(codigo, resultados, nome)=>{
     await sql.connect(sqlConfig);
-    const estoqueQuery = `SELECT TOP (${resultados}) CODIGO, DESCRI FROM ESTOQUE WHERE CODIGO LIKE '%${codigo}%' ORDER BY CODIGO`;
+    const estoqueQuery = `SELECT TOP (${resultados}) CODIGO, DESCRI FROM ESTOQUE WHERE CODIGO LIKE '%${codigo}%' AND DESCRI LIKE '%${nome}%' ORDER BY CODIGO`;
     const estoque = await sql.query(estoqueQuery);
     return estoque.recordset;
 };
