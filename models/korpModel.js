@@ -65,6 +65,13 @@ const uncryptObs = async(codigo)=>{
   return product.recordset;
 };
 
+const categoria = async(categoria)=>{
+  await sql.connect(sqlConfig);
+  const selectQuery = `select DESC_CAT from CST_CADASTRO_PRODUTO_CAB WHERE CATEGORIA = '${categoria}'`;
+  const select = await sql.query(selectQuery);
+  return select.recordset;
+};
+
 module.exports = {
     all,
     search,
@@ -72,5 +79,6 @@ module.exports = {
     allPedidosDeCompra,
     searchPedidosDeCompra,
     pedidoDeCompra,
-    uncryptObs
+    uncryptObs,
+    categoria
 };
