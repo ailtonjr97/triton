@@ -54,6 +54,20 @@ router.post("/register", async(req, res)=>{
     }
 });
 
+router.post("/alterPassword/:id", async(req, res)=>{
+    try {
+        const hashedPassword = bcrypt.hashSync(req.body._value)
+        await Users.alterPassword(
+            hashedPassword,
+            req.params.id
+        )
+        res.sendStatus(200);
+    } catch (error) {
+        console.log(error)
+        res.sendStatus(500);
+    }
+});
+
 router.post("/alter/:id", async(req, res)=>{
     try {
         await Users.updateOne(
@@ -62,6 +76,9 @@ router.post("/alter/:id", async(req, res)=>{
             req.body.admin,
             req.body.dpo,
             req.body.setor,
+            req.body.intranet_id,
+            req.body.intranet_department_id,
+            req.body.intranet_setor_chamado,
             req.params.id
         )
         res.sendStatus(200)

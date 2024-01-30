@@ -56,6 +56,12 @@ let register = async(name, email, password, admin, setor)=>{
     return rows;
 }
 
+let alterPassword = async(password, id)=>{
+    const conn = await connect();
+    await conn.query('UPDATE docspro.users SET password = ? WHERE id = ?', [password, id]);
+    conn.end();
+}
+
 let userRegisterConfirmation = async(email)=>{
     const conn = await connect();
     const [rows] = await conn.query(`SELECT id FROM users WHERE email = '${email}'`);
@@ -75,14 +81,17 @@ let reactivateUser = async(id)=>{
     conn.end();
 }
 
-let updateOne = async(name, email, admin, dpo, setor, id)=>{
+let updateOne = async(name, email, admin, dpo, setor, intranet_id, intranet_department_id, intranet_setor_chamado, id)=>{
     const conn = await connect();
-    const [rows] = await conn.query('UPDATE docspro.users SET name = ?, email = ?, admin = ?, dpo = ?, setor = ? WHERE id = ?', [
+    const [rows] = await conn.query('UPDATE docspro.users SET name = ?, email = ?, admin = ?, dpo = ?, setor = ?, intranet_id = ?, intranet_department_id = ?, intranet_setor_chamado = ? WHERE id = ?', [
         name,
         email,
         admin,
         dpo,
         setor,
+        intranet_id,
+        intranet_department_id,
+        intranet_setor_chamado,
         id
     ]);
     conn.end();
@@ -125,5 +134,6 @@ module.exports = {
     passwordReset,
     emailCheck,
     passwordReturn,
-    getUserJwt
+    getUserJwt,
+    alterPassword
 };

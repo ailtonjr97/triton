@@ -1,4 +1,6 @@
 const sql = require('mssql');
+const dotenv = require("dotenv");
+dotenv.config();
 
 const sqlConfig = {
     user: process.env.MSUSER,
@@ -80,5 +82,5 @@ module.exports = {
     searchPedidosDeCompra,
     pedidoDeCompra,
     uncryptObs,
-    categoria
+    categoria,
 };

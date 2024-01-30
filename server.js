@@ -10,6 +10,7 @@ const rh = require("./controllers/rhController.js");
 const auth = require("./controllers/authController.js");
 const totvs = require("./controllers/apisTotvsController.js");
 const korp = require("./controllers/korpController.js");
+const engenharia = require("./controllers/engenhariaController.js");
 const files = require("./controllers/filesController.js");
 
 var corsOptions = {
@@ -69,6 +70,7 @@ app.use("/rh", cors(corsOptions), authenticationMiddleware, rh);
 app.use("/qualidade", cors(corsOptions), authenticationMiddleware, qualidade);
 app.use("/chamados", cors(corsOptions), authenticationMiddleware, chamados);
 app.use("/korp", cors(corsOptions), authenticationMiddleware, korp);
+app.use("/engenharia", cors(corsOptions), authenticationMiddleware, engenharia);
 app.use("/totvs", cors(corsOptions), authenticationMiddlewareApi, totvs);
 app.use("/files", cors(corsOptions), files);
 
