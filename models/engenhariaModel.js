@@ -36,7 +36,15 @@ const search = async(codigo, resultados, nome)=>{
     return rows;
 };
 
+const molde = async(codigo)=>{
+    const conn = await connect();
+    const [rows] = await conn.query(`SELECT * FROM moldes WHERE ID = ${codigo}`);
+    conn.end();
+    return rows;
+  };
+
 module.exports = {
     all,
-    search
+    search,
+    molde
 };

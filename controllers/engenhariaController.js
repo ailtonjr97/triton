@@ -86,4 +86,13 @@ router.get("/moldes/pdf", async(req, res)=>{
     }
 });
 
+router.get("/moldes/:id", async(req, res)=>{
+    try {
+        res.json(await engenhariaModel.molde(req.params.id));
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
 module.exports = router;
