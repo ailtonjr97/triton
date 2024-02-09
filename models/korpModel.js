@@ -74,6 +74,41 @@ const categoria = async(categoria)=>{
   return select.recordset;
 };
 
+const familia = async(familia)=>{
+  await sql.connect(sqlConfig);
+  const selectQuery = `select DESGRUPO from GRUPOE WHERE GRUPO = '${familia}'`;
+  const select = await sql.query(selectQuery);
+  return select.recordset;
+};
+
+const grupo = async(grupo)=>{
+  await sql.connect(sqlConfig);
+  const selectQuery = `select DESCRICAO from GRUPO_EST WHERE CODIGO = '${grupo}'`;
+  const select = await sql.query(selectQuery);
+  return select.recordset;
+};
+
+const subgrupo = async(subgrupo)=>{
+  await sql.connect(sqlConfig);
+  const selectQuery = `select DESCRICAO from ESTOQUE_SUBGRUPO WHERE CODIGO = '${subgrupo}'`;
+  const select = await sql.query(selectQuery);
+  return select.recordset;
+};
+
+const genero = async(genero)=>{
+  await sql.connect(sqlConfig);
+  const selectQuery = `select DESC_GENERO from SPD_GENERO WHERE CODIGO = '${genero}'`;
+  const select = await sql.query(selectQuery);
+  return select.recordset;
+};
+
+const tipo = async(tipo)=>{
+  await sql.connect(sqlConfig);
+  const selectQuery = `select DESC_TIPO_ITEM from CT_TIPO_ITEM WHERE CODIGO = '${tipo}'`;
+  const select = await sql.query(selectQuery);
+  return select.recordset;
+};
+
 module.exports = {
     all,
     search,
@@ -83,4 +118,9 @@ module.exports = {
     pedidoDeCompra,
     uncryptObs,
     categoria,
+    familia,
+    grupo,
+    subgrupo,
+    genero,
+    tipo
 };

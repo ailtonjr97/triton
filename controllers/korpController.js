@@ -103,6 +103,51 @@ router.get("/produto/categoria/:categoria", async(req, res)=>{
     }
 });
 
+router.get("/produto/familia/:familia", async(req, res)=>{
+    try {
+        res.json(await korpModel.familia(req.params.familia));
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
+router.get("/produto/grupo/:grupo", async(req, res)=>{
+    try {
+        res.json(await korpModel.grupo(req.params.grupo));
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
+router.get("/produto/subgrupo/:subgrupo", async(req, res)=>{
+    try {
+        res.json(await korpModel.subgrupo(req.params.subgrupo));
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
+router.get("/produto/genero/:genero", async(req, res)=>{
+    try {
+        res.json(await korpModel.genero(req.params.genero));
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
+router.get("/produto/tipo/:tipo", async(req, res)=>{
+    try {
+        res.json(await korpModel.tipo(req.params.tipo));
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
 router.get("/pedidos-de-compra/get_all", async(req, res)=>{
     try {
         res.json(await korpModel.allPedidosDeCompra())
