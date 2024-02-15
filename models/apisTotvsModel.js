@@ -42,6 +42,13 @@ const get = async(tableName)=>{
     return rows;
 }
 
+const getOne = async(tableName, id)=>{
+    const conn = await connect();
+    const [rows] = await conn.query(`SELECT * FROM docspro.${tableName} WHERE id = ${id}`);
+    conn.end();
+    return rows;
+}
+
 const updateAcy = async(values)=>{
     const conn = await connect();
     await conn.query("TRUNCATE docspro.acy");
@@ -315,5 +322,6 @@ module.exports = {
     updateSc9,
     updateSf2,
     updateSx5,
-    getSx5
+    getSx5,
+    getOne
 };

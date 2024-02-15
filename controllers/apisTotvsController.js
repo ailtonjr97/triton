@@ -56,6 +56,15 @@ router.get("/api/d12/get_all", async(req, res)=>{
     }
 })
 
+router.get("/api/d12/get_one/:id", async(req, res)=>{
+    try {
+        res.send(await ApisTotvs.getOne("d12", req.params.id))
+    } catch (error) {
+        console.log(error)
+        res.sendStatus(500) 
+    }
+})
+
 router.post("/api/d12/update", async(req, res)=>{
     try {
         const values = [];
