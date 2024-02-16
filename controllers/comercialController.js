@@ -31,4 +31,13 @@ router.get("/proposta-de-frete/pesquisa", async(req, res)=>{
     }
 });
 
+router.get("/proposta-de-frete/:id", async(req, res)=>{
+    try {
+        res.json(await comercialModel.proposta(req.params.id));
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
 module.exports = router;

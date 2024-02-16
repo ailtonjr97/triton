@@ -32,12 +32,19 @@ const all = async(setor, designado)=>{
 const search = async(pedido, resultados)=>{
     const conn = await connect();
     const [rows] = await conn.query(`SELECT id, pedido, cotador_id FROM proposta_frete WHERE pedido LIKE '%${pedido}%' ORDER BY id LIMIT ${resultados}`);
-    console.log(rows)
     conn.end();
     return rows;
 };
 
+const proposta = async(id)=>{
+    const conn = await connect();
+    const [rows] = await conn.query(`select * from proposta_frete WHERE id = ${id}`);
+    conn.end();
+    return rows;
+  };
+
 module.exports = {
     all,
-    search
+    search,
+    proposta
 };
