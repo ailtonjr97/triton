@@ -40,4 +40,14 @@ router.get("/proposta-de-frete/:id", async(req, res)=>{
     }
 });
 
+router.post("/proposta-de-frete/:id", async(req, res)=>{
+    try {
+        await comercialModel.freteUpdate(req.body, req.params.id)
+        res.sendStatus(200);
+    } catch (error) {
+        console.log(error)
+        res.sendStatus(500)
+    }
+})
+
 module.exports = router;

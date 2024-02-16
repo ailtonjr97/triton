@@ -24,7 +24,7 @@ connect();
 
 const all = async(setor, designado)=>{
     const conn = await connect();
-    const [rows] = await conn.query(`SELECT id, pedido, cotador_id FROM docspro.proposta_frete`);
+    const [rows] = await conn.query(`SELECT * FROM docspro.proposta_frete`);
     conn.end();
     return rows;
 };
@@ -41,10 +41,23 @@ const proposta = async(id)=>{
     const [rows] = await conn.query(`select * from proposta_frete WHERE id = ${id}`);
     conn.end();
     return rows;
-  };
+};
+
+const freteUpdate = async(body, id)=>{
+    const conn = await connect();
+    await conn.query(`
+        UPDATE docspro.proposta_frete SET
+        valor = ?,
+        id_transportadora = ?,
+        prazo = ?
+        WHERE id = ?
+    `, [body.valor, body.id_transportadora, body.prazo, id]);
+    conn.end();
+};
 
 module.exports = {
     all,
     search,
-    proposta
+    proposta,
+    freteUpdate
 };

@@ -34,7 +34,7 @@ router.post("/documentos/anexos/:id", upload.single('file'), async(req, res)=>{
         console.log(error)
         res.sendStatus(500)
     }
-})
+});
 
 router.get("/documentos/anexos-lista/:id", async(req, res)=>{
     try {
