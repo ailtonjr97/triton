@@ -54,15 +54,9 @@ router.post("/proposta-de-frete/:id", async(req, res)=>{
 
 router.get("/sck/:numped", async(req, res)=>{
     try {
-        const values = [];
-        const limitador = await axios.get(process.env.APITOTVS + "CONSULTA_SCK/get_all", {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
-        const response = await axios.get(process.env.APITOTVS + "CONSULTA_SCK/get_all?limit=" + limitador.data.meta.total, {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
-        response.data.objects.forEach(response => {
-            values.push(response); 
-        });
-        res.send(response.data);
+        const response = await axios.get(process.env.APITOTVS + "CONSULTA_SCK_2/get_all_id?idN=" + req.params.numped, {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        res.send(response.data)
     } catch (error) {
-        console.log(error);
         res.sendStatus(500);
     }
 });
