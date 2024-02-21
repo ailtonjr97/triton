@@ -24,7 +24,7 @@ connect();
 
 const all = async(setor, designado)=>{
     const conn = await connect();
-    const [rows] = await conn.query(`SELECT * FROM docspro.proposta_frete`);
+    const [rows] = await conn.query(`SELECT pf.*, u.name FROM docspro.proposta_frete as pf left join users as u on pf.cotador_id = u.id`);
     conn.end();
     return rows;
 };

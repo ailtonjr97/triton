@@ -101,4 +101,14 @@ router.get("/proposta-frete-itens/:numped", async(req, res)=>{
     }
 });
 
+router.get("/transportadoras", async(req, res)=>{
+    try {
+        const response = await axios.get(process.env.APITOTVS + "CONSULTA_SA4/get_all", {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        res.send(response.data.objects)
+    } catch (error) {
+        console.log(error)
+        res.sendStatus(500);
+    }
+});
+
 module.exports = router;
