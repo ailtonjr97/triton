@@ -31,7 +31,7 @@ const all = async(setor, designado)=>{
 
 const search = async(pedido, resultados)=>{
     const conn = await connect();
-    const [rows] = await conn.query(`SELECT id, pedido, cotador_id FROM proposta_frete WHERE pedido LIKE '%${pedido}%' ORDER BY id LIMIT ${resultados}`);
+    const [rows] = await conn.query(`SELECT * FROM docspro.proposta_frete WHERE pedido LIKE '%${pedido}%' ORDER BY id LIMIT ${resultados}`);
     conn.end();
     return rows;
 };
@@ -55,9 +55,62 @@ const freteUpdate = async(body, id)=>{
     conn.end();
 };
 
+const novaProposta = async(numped, cotador, today, revisao)=>{
+    const conn = await connect();
+    await conn.query(
+        `INSERT INTO docspro.proposta_frete (
+            pedido,
+            cotador_id,
+            data_solicit,
+            data_resp,
+            revisao,
+            valor,
+            status,
+            id_transportadora,
+            prazo
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [numped, cotador, today, null, revisao, 0, 1, null, null]);
+    conn.end();
+};
+
+const novosItens = async(numped, body)=>{
+    const conn = await connect();
+    await conn.query(
+        `INSERT INTO docspro.proposta_frete_itens (
+            proposta_frete_id,
+            produto,
+            qtdven,
+            loja,
+            descri,
+            obs
+        )
+        VALUES (?, ?, ?, ?, ?, ?)`,
+        [numped, body.produto, body.qtdven, body.loja, body.descri, body.obs]);
+    conn.end();
+};
+
+const freteItens = async(numped)=>{
+    const conn = await connect();
+    const [rows] = await conn.query(`select * from proposta_frete_itens WHERE proposta_frete_id = ${numped}`);
+    conn.end();
+    return rows;
+};
+
+const revisaoCotacao = async(numped)=>{
+    const conn = await connect();
+    const [rows] = await conn.query(`select revisao from proposta_frete WHERE pedido = ${numped} order by id desc limit 1`);
+    conn.end();
+    return rows;
+};
+
 module.exports = {
     all,
     search,
     proposta,
-    freteUpdate
+    freteUpdate,
+    novaProposta,
+    novosItens,
+    freteItens,
+    revisaoCotacao
 };

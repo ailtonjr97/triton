@@ -67,7 +67,7 @@ const create = async(body)=>{
         VALUES ('FOR-EDP-025', ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0, 0, 0, 1, '')`,
     [body.data, body.inspetor, body.cod_prod, body.descri, body.lote_odf, body.lance, body.quantidade_metragem, body.cpnc_numero, body.motivo_nc]);
     conn.end();
-}
+};
 
 const edpUpdate = async(body, id)=>{
     const conn = await connect();

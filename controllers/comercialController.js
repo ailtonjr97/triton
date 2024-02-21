@@ -61,4 +61,44 @@ router.get("/sck/:numped", async(req, res)=>{
     }
 });
 
+router.post("/nova-proposta-de-frete/:numped/:cotador", async(req, res)=>{
+    try {
+        let today = new Date();
+        const dd = String(today.getDate()).padStart(2, '0');
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const yyyy = today.getFullYear();
+        today = dd + '/' + mm + '/' + yyyy;
+
+        let revisao = await comercialModel.revisaoCotacao(req.params.numped);
+
+        //Necessário criar 3 cotações
+        if(revisao.length == 0){
+            await comercialModel.novaProposta(req.params.numped, req.params.cotador, today, 1);
+            await comercialModel.novaProposta(req.params.numped, req.params.cotador, today, 1);
+            await comercialModel.novaProposta(req.params.numped, req.params.cotador, today, 1);
+            for(let i = 0; i < req.body.length; i++){
+                await comercialModel.novosItens(req.params.numped, req.body[i]);
+            };
+        }else{
+            await comercialModel.novaProposta(req.params.numped, req.params.cotador, today, parseInt(revisao[0].revisao) + 1);
+            await comercialModel.novaProposta(req.params.numped, req.params.cotador, today, parseInt(revisao[0].revisao) + 1);
+            await comercialModel.novaProposta(req.params.numped, req.params.cotador, today, parseInt(revisao[0].revisao) + 1);
+        };
+
+        res.sendStatus(200);
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
+router.get("/proposta-frete-itens/:numped", async(req, res)=>{
+    try {
+        res.json(await comercialModel.freteItens(req.params.numped));
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
 module.exports = router;
