@@ -24,14 +24,14 @@ connect();
 
 const all = async(setor, designado)=>{
     const conn = await connect();
-    const [rows] = await conn.query(`SELECT pf.*, u.name FROM docspro.proposta_frete as pf left join users as u on pf.cotador_id = u.id`);
+    const [rows] = await conn.query(`SELECT pf.*, u.name as 'vendedor', u2.name as 'cotador' FROM docspro.proposta_frete as pf left join users as u on pf.cotador_id = u.id left join users as u2 on pf.cotador_id_2 = u2.id`);
     conn.end();
     return rows;
 };
 
-const search = async(pedido, resultados)=>{
+const search = async(codigo, resultados)=>{
     const conn = await connect();
-    const [rows] = await conn.query(`SELECT * FROM docspro.proposta_frete WHERE pedido LIKE '%${pedido}%' ORDER BY id LIMIT ${resultados}`);
+    const [rows] = await conn.query(`SELECT pf.*, u.name as 'vendedor', u2.name as 'cotador' FROM docspro.proposta_frete as pf left join users as u on pf.cotador_id = u.id left join users as u2 on pf.cotador_id_2 = u2.id WHERE pedido LIKE '%${codigo}%' LIMIT ${resultados}`);
     conn.end();
     return rows;
 };
@@ -43,19 +43,22 @@ const proposta = async(id)=>{
     return rows;
 };
 
-const freteUpdate = async(body, id)=>{
+const freteUpdate = async(body, id, today)=>{
     const conn = await connect();
     await conn.query(`
         UPDATE docspro.proposta_frete SET
+        data_resp = ?,
         valor = ?,
         id_transportadora = ?,
-        prazo = ?
+        prazo = ?,
+        nome_transportadora = ?,
+        cotador_id_2 = ?
         WHERE id = ?
-    `, [body.valor, body.id_transportadora, body.prazo, id]);
+    `, [today, body.valor, body.transp_nome_select, body.prazo, body.transp_nome2_select, body.cotador_id_2, id]);
     conn.end();
 };
 
-const novaProposta = async(numped, cotador, today, revisao)=>{
+const novaProposta = async(numped, cotador, today, revisao, cliente)=>{
     const conn = await connect();
     await conn.query(
         `INSERT INTO docspro.proposta_frete (
@@ -67,10 +70,11 @@ const novaProposta = async(numped, cotador, today, revisao)=>{
             valor,
             status,
             id_transportadora,
-            prazo
+            prazo,
+            cliente
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [numped, cotador, today, null, revisao, 0, 1, null, null]);
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [numped, cotador, today, null, revisao, 0, 1, null, null, cliente]);
     conn.end();
 };
 
