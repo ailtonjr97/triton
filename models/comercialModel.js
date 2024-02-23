@@ -24,12 +24,26 @@ connect();
 
 const all = async(setor, designado)=>{
     const conn = await connect();
+    const [rows] = await conn.query(`SELECT pf.*, u.name as 'vendedor', u2.name as 'cotador' FROM docspro.proposta_frete as pf left join users as u on pf.cotador_id = u.id left join users as u2 on pf.cotador_id_2 = u2.id  where revisao = (select Max(revisao) from proposta_frete as pf2 where pf2.pedido=pf.pedido) order by id desc`);
+    conn.end();
+    return rows;
+};
+
+const allSemRevisao = async(setor, designado)=>{
+    const conn = await connect();
     const [rows] = await conn.query(`SELECT pf.*, u.name as 'vendedor', u2.name as 'cotador' FROM docspro.proposta_frete as pf left join users as u on pf.cotador_id = u.id left join users as u2 on pf.cotador_id_2 = u2.id`);
     conn.end();
     return rows;
 };
 
 const search = async(codigo, resultados)=>{
+    const conn = await connect();
+    const [rows] = await conn.query(`SELECT pf.*, u.name as 'vendedor', u2.name as 'cotador' FROM docspro.proposta_frete as pf left join users as u on pf.cotador_id = u.id left join users as u2 on pf.cotador_id_2 = u2.id  where revisao = (select Max(revisao) from proposta_frete as pf2 where pf2.pedido=pf.pedido) and pedido LIKE '%${codigo}%' order by id desc LIMIT ${resultados}`);
+    conn.end();
+    return rows;
+};
+
+const searchSemRevisao = async(codigo, resultados)=>{
     const conn = await connect();
     const [rows] = await conn.query(`SELECT pf.*, u.name as 'vendedor', u2.name as 'cotador' FROM docspro.proposta_frete as pf left join users as u on pf.cotador_id = u.id left join users as u2 on pf.cotador_id_2 = u2.id WHERE pedido LIKE '%${codigo}%' LIMIT ${resultados}`);
     conn.end();
@@ -58,7 +72,7 @@ const freteUpdate = async(body, id, today)=>{
     conn.end();
 };
 
-const novaProposta = async(numped, cotador, today, revisao, cliente)=>{
+const novaProposta = async(numped, cotador, today, revisao, cliente, valor_pedido)=>{
     const conn = await connect();
     await conn.query(
         `INSERT INTO docspro.proposta_frete (
@@ -71,10 +85,11 @@ const novaProposta = async(numped, cotador, today, revisao, cliente)=>{
             status,
             id_transportadora,
             prazo,
-            cliente
+            cliente,
+            valor_pedido
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [numped, cotador, today, null, revisao, 0, 1, null, null, cliente]);
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [numped, cotador, today, null, revisao, 0, 1, null, null, cliente, valor_pedido]);
     conn.end();
 };
 
@@ -116,5 +131,7 @@ module.exports = {
     novaProposta,
     novosItens,
     freteItens,
-    revisaoCotacao
+    revisaoCotacao,
+    allSemRevisao,
+    searchSemRevisao
 };
