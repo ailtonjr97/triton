@@ -22,14 +22,14 @@ async function connect(){
 
 connect();
 
-const all = async(setor, designado)=>{
+const all = async()=>{
     const conn = await connect();
     const [rows] = await conn.query(`SELECT pf.*, u.name as 'vendedor', u2.name as 'cotador' FROM docspro.proposta_frete as pf left join users as u on pf.cotador_id = u.id left join users as u2 on pf.cotador_id_2 = u2.id  where revisao = (select Max(revisao) from proposta_frete as pf2 where pf2.pedido=pf.pedido) order by id desc`);
     conn.end();
     return rows;
 };
 
-const allSemRevisao = async(setor, designado)=>{
+const allSemRevisao = async()=>{
     const conn = await connect();
     const [rows] = await conn.query(`SELECT pf.*, u.name as 'vendedor', u2.name as 'cotador' FROM docspro.proposta_frete as pf left join users as u on pf.cotador_id = u.id left join users as u2 on pf.cotador_id_2 = u2.id`);
     conn.end();
