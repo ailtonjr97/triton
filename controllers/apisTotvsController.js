@@ -24,7 +24,9 @@ router.post("/api/lista", async(req, res)=>{
 
 router.get("/api/acy/get_all", async(req, res)=>{
     try {
-        res.send(await ApisTotvs.get('acy'))
+        const limitador = await axios.get(process.env.APITOTVS + "CONSULTA_ACY/get_all", {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        const response = await axios.get(process.env.APITOTVS + "CONSULTA_ACY/get_all?limit=" + limitador.data.meta.total, {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        res.json(response.data.objects)
     } catch (error) {
         console.log(error);
         res.sendStatus(500);
