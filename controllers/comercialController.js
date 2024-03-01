@@ -1,6 +1,5 @@
 const express = require("express");
 const comercialModel = require("../models/comercialModel");
-const ApisTotvs = require("../models/apisTotvsModel");
 const router = express.Router();
 const XLSX = require('xlsx')
 const path = require('path')
@@ -285,7 +284,7 @@ router.get("/proposta-frete-itens/:numped", async(req, res)=>{
 router.get("/transportadoras", async(req, res)=>{
     try {
         const response = await axios.get(process.env.APITOTVS + "CONSULTA_SA4/get_all", {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
-        res.send(response.data.objects)
+        res.json(response.data.objects)
     } catch (error) {
         console.log(error)
         res.sendStatus(500);
@@ -295,7 +294,7 @@ router.get("/transportadoras", async(req, res)=>{
 router.get("/transportadoras/:nome", async(req, res)=>{
     try {
         const response = await axios.get(process.env.APITOTVS + "CONSULTA_SA4/get_all_like_nome?limit=20&pesquisa=" + req.params.nome, {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
-        res.send(response.data.objects)
+        res.json(response.data.objects);
     } catch (error) {
         res.sendStatus(500);
     }
@@ -304,11 +303,10 @@ router.get("/transportadoras/:nome", async(req, res)=>{
 router.get("/update-frete-cot", async(req, res)=>{
     try {
         console.log(req.query)
-        const response = await axios.put(process.env.APITOTVS + `CONSULTA_SCJ/update_cst?num=${req.query.cj_num}&fts=${req.query.cj_cst_fts}`,"", {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
-        console.log(response)
-        res.sendStatus(200)
+        await axios.put(process.env.APITOTVS + `CONSULTA_SCJ/update_cst?num=${req.query.cj_num}&fts=${req.query.cj_cst_fts}&valor=${req.query.valor}&transp=${req.query.transp}`,"", {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        res.sendStatus(200);
     } catch (error) {
-        console.log(error)
+        console.log(error);
         res.sendStatus(500);
     }
 });
