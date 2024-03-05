@@ -302,7 +302,6 @@ router.get("/transportadoras/:nome", async(req, res)=>{
 
 router.get("/update-frete-cot", async(req, res)=>{
     try {
-        console.log(req.query)
         await axios.put(process.env.APITOTVS + `CONSULTA_SCJ/update_cst?num=${req.query.cj_num}&fts=${req.query.cj_cst_fts}&valor=${req.query.valor}&transp=${req.query.transp}`,"", {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
         res.sendStatus(200);
     } catch (error) {
