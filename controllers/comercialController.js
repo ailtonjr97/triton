@@ -235,7 +235,7 @@ router.get("/clientes/:numped", async(req, res)=>{
     }
 });
 
-router.post("/nova-proposta-de-frete/:numped/:cotador", async(req, res)=>{
+router.post("/nova-proposta-de-frete/:numped/:cotador/:filial", async(req, res)=>{
     try {
         let today = new Date();
         const dd = String(today.getDate()).padStart(2, '0');
@@ -244,7 +244,7 @@ router.post("/nova-proposta-de-frete/:numped/:cotador", async(req, res)=>{
         today = dd + '/' + mm + '/' + yyyy;
 
         let revisao = await comercialModel.revisaoCotacao(req.params.numped);
-        const response = await axios.get(process.env.APITOTVS + "CONSULTA_SCJ/get_id?id=" + req.params.numped, {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        const response = await axios.get(process.env.APITOTVS + `CONSULTA_SCJ/get_id?id=${req.params.numped}&empresa=${req.params.filial}`, {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
 
         let valorTotal = 0.0
         for(let i = 0; i < req.body.length; i++){
@@ -253,16 +253,16 @@ router.post("/nova-proposta-de-frete/:numped/:cotador", async(req, res)=>{
 
         //Necessário criar 3 cotações
         if(revisao.length == 0){
-            await comercialModel.novaProposta(req.params.numped, req.params.cotador, today, 1, response.data.cliente, valorTotal + response.data.xfreimp);
-            await comercialModel.novaProposta(req.params.numped, req.params.cotador, today, 1, response.data.cliente, valorTotal + response.data.xfreimp);
-            await comercialModel.novaProposta(req.params.numped, req.params.cotador, today, 1, response.data.cliente, valorTotal + response.data.xfreimp);
+            await comercialModel.novaProposta(req.params.numped, req.params.cotador, today, 1, response.data.cliente, valorTotal + response.data.xfreimp, req.params.filial);
+            await comercialModel.novaProposta(req.params.numped, req.params.cotador, today, 1, response.data.cliente, valorTotal + response.data.xfreimp, req.params.filial);
+            await comercialModel.novaProposta(req.params.numped, req.params.cotador, today, 1, response.data.cliente, valorTotal + response.data.xfreimp, req.params.filial);
             for(let i = 0; i < req.body.length; i++){
                 await comercialModel.novosItens(req.params.numped, req.body[i]);
             };
         }else{
-            await comercialModel.novaProposta(req.params.numped, req.params.cotador, today, parseInt(revisao[0].revisao) + 1, response.data.cliente, valorTotal + response.data.xfreimp);
-            await comercialModel.novaProposta(req.params.numped, req.params.cotador, today, parseInt(revisao[0].revisao) + 1, response.data.cliente, valorTotal + response.data.xfreimp);
-            await comercialModel.novaProposta(req.params.numped, req.params.cotador, today, parseInt(revisao[0].revisao) + 1, response.data.cliente, valorTotal + response.data.xfreimp);
+            await comercialModel.novaProposta(req.params.numped, req.params.cotador, today, parseInt(revisao[0].revisao) + 1, response.data.cliente, valorTotal + response.data.xfreimp, req.params.filial);
+            await comercialModel.novaProposta(req.params.numped, req.params.cotador, today, parseInt(revisao[0].revisao) + 1, response.data.cliente, valorTotal + response.data.xfreimp, req.params.filial);
+            await comercialModel.novaProposta(req.params.numped, req.params.cotador, today, parseInt(revisao[0].revisao) + 1, response.data.cliente, valorTotal + response.data.xfreimp, req.params.filial);
         };
 
         res.sendStatus(200);
@@ -304,6 +304,73 @@ router.get("/update-frete-cot", async(req, res)=>{
     try {
         await axios.put(process.env.APITOTVS + `CONSULTA_SCJ/update_cst?num=${req.query.cj_num}&fts=${req.query.cj_cst_fts}&valor=${req.query.valor}&transp=${req.query.transp}`,"", {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
         res.sendStatus(200);
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
+router.get("/sa1", async(req, res)=>{
+    try {
+        res.json(await comercialModel.sa1());
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
+router.get("/sa1/:cod", async(req, res)=>{
+    try {
+        const response = await axios.get(process.env.APITOTVS + `CONSULTA_SA1/get_id?id=${req.params.cod}`, {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        res.json(response.data);
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
+router.get("/sa1/update", async(req, res)=>{
+    try {
+        const values = [];
+        const limitador = await axios.get(process.env.APITOTVS + "CONSULTA_SA1/get_all", {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        const response = await axios.get(process.env.APITOTVS + "CONSULTA_SA1/get_all?limit=" + limitador.data.meta.total, {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        response.data.objects.forEach(response => {
+            values.push([
+                response.cod,
+                response.nome,
+                response.cod_mun,
+                response.mun,
+                response.nreduz,
+                response.grpven,
+                response.loja,
+                response.end,
+                response.codpais,
+                response.est,
+                response.cep,
+                response.tipo,
+                response.cgc,
+                response.filial,
+                response.xcartei
+            ])
+        });
+        await comercialModel.updateSa1(values);
+        res.sendStatus(200);
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+})
+
+router.get("/sa1/pesquisa", async(req, res)=>{
+    try {
+        let resultados
+        if(req.query.resultados == 'null' || req.query.resultados == undefined || req.query.resultados == '')
+        {
+            resultados = 1000
+        }else{
+            resultados = req.query.resultados
+        }
+        res.json(await comercialModel.searchSa1(req.query.codigo, req.query.nome, resultados));
     } catch (error) {
         console.log(error);
         res.sendStatus(500);

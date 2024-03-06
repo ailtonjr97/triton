@@ -72,7 +72,7 @@ const freteUpdate = async(body, id, today)=>{
     conn.end();
 };
 
-const novaProposta = async(numped, cotador, today, revisao, cliente, valor_pedido)=>{
+const novaProposta = async(numped, cotador, today, revisao, cliente, valor_pedido, filial)=>{
     const conn = await connect();
     await conn.query(
         `INSERT INTO docspro.proposta_frete (
@@ -86,10 +86,11 @@ const novaProposta = async(numped, cotador, today, revisao, cliente, valor_pedid
             id_transportadora,
             prazo,
             cliente,
-            valor_pedido
+            valor_pedido,
+            filial
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [numped, cotador, today, null, revisao, 0, 1, null, null, cliente, valor_pedido]);
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [numped, cotador, today, null, revisao, 0, 1, null, null, cliente, valor_pedido, filial]);
     conn.end();
 };
 
@@ -123,6 +124,50 @@ const revisaoCotacao = async(numped)=>{
     return rows;
 };
 
+const sa1 = async()=>{
+    const conn = await connect();
+    const [rows] = await conn.query(`SELECT id, cod, nome FROM sa1 limit 1000`);
+    conn.end();
+    return rows;
+};
+
+const updateSa1 = async(values)=>{
+    const conn = await connect();
+    await conn.query("TRUNCATE docspro.sa1");
+    await conn.query(`INSERT INTO docspro.sa1 (
+        cod, 
+        nome,
+        cod_mun,
+        mun,
+        nreduz,
+        grpven,
+        loja,
+        end,
+        codpais,
+        est,
+        cep,
+        tipo,
+        cgc,
+        filial,
+        xcartei
+    ) VALUES ?`, [values]);
+    conn.end();
+}
+
+const searchSa1 = async(codigo, nome, resultados)=>{
+    const conn = await connect();
+    const [rows] = await conn.query(`SELECT id, cod, nome FROM sa1 WHERE cod LIKE '%${codigo}%' AND nome LIKE '%${nome}%' limit ${resultados}`);
+    conn.end();
+    return rows;
+};
+
+const sa1Unico = async(cod)=>{
+    const conn = await connect();
+    const [rows] = await conn.query(`SELECT * FROM sa1 WHERE cod = '${cod}'`);
+    conn.end();
+    return rows;
+};
+
 module.exports = {
     all,
     search,
@@ -133,5 +178,9 @@ module.exports = {
     freteItens,
     revisaoCotacao,
     allSemRevisao,
-    searchSemRevisao
+    searchSemRevisao,
+    sa1,
+    updateSa1,
+    searchSa1,
+    sa1Unico
 };
