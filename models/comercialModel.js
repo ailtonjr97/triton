@@ -168,6 +168,16 @@ const sa1Unico = async(cod)=>{
     return rows;
 };
 
+const sa1UpdateLocal = async(body)=>{
+    const conn = await connect();
+    await conn.query(`
+        UPDATE docspro.sa1 SET
+        nome = ?
+        WHERE cod = ?
+    `, [body.A1_NOME, body.A1_COD]);
+    conn.end();
+};
+
 module.exports = {
     all,
     search,
@@ -182,5 +192,6 @@ module.exports = {
     sa1,
     updateSa1,
     searchSa1,
-    sa1Unico
+    sa1Unico,
+    sa1UpdateLocal
 };

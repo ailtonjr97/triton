@@ -329,7 +329,7 @@ router.get("/sa1/:cod", async(req, res)=>{
     }
 });
 
-router.get("/sa1/update", async(req, res)=>{
+router.get("/sa1-update", async(req, res)=>{
     try {
         const values = [];
         const limitador = await axios.get(process.env.APITOTVS + "CONSULTA_SA1/get_all", {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
@@ -361,7 +361,7 @@ router.get("/sa1/update", async(req, res)=>{
     }
 })
 
-router.get("/sa1/pesquisa", async(req, res)=>{
+router.get("/sa1-pesquisa", async(req, res)=>{
     try {
         let resultados
         if(req.query.resultados == 'null' || req.query.resultados == undefined || req.query.resultados == '')
@@ -371,6 +371,27 @@ router.get("/sa1/pesquisa", async(req, res)=>{
             resultados = req.query.resultados
         }
         res.json(await comercialModel.searchSa1(req.query.codigo, req.query.nome, resultados));
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
+router.post("/sa1/api/update", async(req, res)=>{
+    try {
+        const response = await axios.put(process.env.APITOTVS + `updatesa1/update/sa1`, req.body, {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        console.log(response)
+        res.sendStatus(200)
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
+router.post("/sa1/api/update-local", async(req, res)=>{
+    try {
+        await comercialModel.sa1UpdateLocal(req.body);
+        res.sendStatus(200);
     } catch (error) {
         console.log(error);
         res.sendStatus(500);
