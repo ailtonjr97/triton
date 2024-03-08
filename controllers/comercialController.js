@@ -379,8 +379,7 @@ router.get("/sa1-pesquisa", async(req, res)=>{
 
 router.post("/sa1/api/update", async(req, res)=>{
     try {
-        const response = await axios.put(process.env.APITOTVS + `updatesa1/update/sa1`, req.body, {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
-        console.log(response)
+        await axios.put(process.env.APITOTVS + `updatesa1/update/sa1`, req.body, {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}, Headers: {"tenantid": `01, 0101001, ailton souza, ${process.env.SENHAPITOTVS}`, "x-erp-module": "FAT"}});
         res.sendStatus(200)
     } catch (error) {
         console.log(error);
