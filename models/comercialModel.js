@@ -178,6 +178,58 @@ const sa1UpdateLocal = async(body)=>{
     conn.end();
 };
 
+const tamanhoTabela = async()=>{
+    const conn = await connect();
+    const [rows] = await conn.query(`SELECT count(id) as 'contagem' FROM sa3`);
+    conn.end();
+    return rows;
+};
+
+const sa3 = async()=>{
+    const conn = await connect();
+    const [rows] = await conn.query(`SELECT id, filial, cod, nome FROM sa3`);
+    conn.end();
+    return rows;
+};
+
+const truncateSa3 = async(values)=>{
+    const conn = await connect();
+    await conn.query("TRUNCATE docspro.sa3");
+    conn.end();
+}
+
+const insertSa3 = async(filial, cod, nome)=>{
+    const conn = await connect();
+    await conn.query(`INSERT INTO docspro.sa3 (
+        filial, 
+        cod,
+        nome
+    ) VALUES ('${filial}', '${cod}', '${nome}')`);
+    conn.end();
+}
+
+const updateSa3 = async(filial, cod, nome, nreduz, end, bairro, mun, est, cep, dddtel, tel, email)=>{
+    const conn = await connect();
+    await conn.query(`
+        UPDATE docspro.sa3 SET
+        filial = ?,
+        cod = ?,
+        nome = ?,
+        nreduz = ?,
+        end = ?,
+        bairro = ?,
+        mun = ?,
+        est = ?,
+        cep = ?,
+        dddtel = ?,
+        tel = ?,
+        email = ?
+        WHERE cod = ?
+        and filial = ?
+    `, [filial, cod, nome, nreduz, end, bairro, mun, est, cep, dddtel, tel, email, cod, filial]);
+    conn.end();
+};
+
 module.exports = {
     all,
     search,
@@ -193,5 +245,10 @@ module.exports = {
     updateSa1,
     searchSa1,
     sa1Unico,
-    sa1UpdateLocal
+    sa1UpdateLocal,
+    sa3,
+    insertSa3,
+    truncateSa3,
+    updateSa3,
+    tamanhoTabela
 };

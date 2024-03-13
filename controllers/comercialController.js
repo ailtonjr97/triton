@@ -397,4 +397,92 @@ router.post("/sa1/api/update-local", async(req, res)=>{
     }
 });
 
+router.get("/sa3", async(req, res)=>{
+    try {
+        res.json(await comercialModel.sa3());
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
+router.get("/sa3/update", async(req, res)=>{
+    try {
+        const hoje = new Date(Date.now()).toLocaleString().split(',')[0];
+        const response = await axios.get(process.env.APITOTVS + `CONSULTA_SA3/get_all?updated_at=${hoje}&limit=10000`,
+        {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+
+        const tam_sa3 = await axios.get(process.env.APITOTVS + `CONSULTA_SA3/get_all?limit=10000`,
+        {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+
+        const tam_tabela = await comercialModel.tamanhoTabela()
+
+        const diferencaTabelas = tam_sa3.data.meta.total - tam_tabela[0].contagem
+
+        let values = [];
+        response.data.objects.forEach(response => {
+            values.push(
+                {"filial": response.filial, "cod": response.cod, "nome": response.nome}
+            )
+        });
+
+        const limitArray = values.length - diferencaTabelas
+        for (let i = 0; i < values.length; i ++){
+            values.splice(0, limitArray)
+        }
+
+/*         //insert de registros SOMENTE SE a tabela estiver vazia
+        for(let i = 0; i < tam_sa3.data.objects.length; i++){
+            await comercialModel.insertSa3(
+                tam_sa3.data.objects[i].filial,
+                tam_sa3.data.objects[i].cod, 
+                tam_sa3.data.objects[i].nome,
+                tam_sa3.data.objects[i].nreduz,
+                tam_sa3.data.objects[i].end,
+                tam_sa3.data.objects[i].bairro,
+                tam_sa3.data.objects[i].mun,
+                tam_sa3.data.objects[i].est,
+                tam_sa3.data.objects[i].cep,
+                tam_sa3.data.objects[i].dddtel,
+                tam_sa3.data.objects[i].tel,
+                tam_sa3.data.objects[i].email
+            )
+        } */
+
+        //insert de registros q não existem ainda
+        if(diferencaTabelas != 0){
+            for(let i = 0; i < values.length; i++){
+                await comercialModel.insertSa3(
+                    values[i].filial,
+                    values[i].cod, 
+                    values[i].nome
+                )
+            }
+        }
+
+        //update dos registros.
+        for(let i = 0; i < response.data.objects.length; i++){
+            await comercialModel.updateSa3(
+                response.data.objects[i].filial,
+                response.data.objects[i].cod, 
+                response.data.objects[i].nome,
+                response.data.objects[i].nreduz,
+                response.data.objects[i].end,
+                response.data.objects[i].bairro,
+                response.data.objects[i].mun,
+                response.data.objects[i].est,
+                response.data.objects[i].cep,
+                response.data.objects[i].dddtel,
+                response.data.objects[i].tel,
+                response.data.objects[i].email
+            )
+        }
+
+        res.json(await comercialModel.sa3());
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
 module.exports = router;
