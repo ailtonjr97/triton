@@ -406,6 +406,15 @@ router.get("/sa3", async(req, res)=>{
     }
 });
 
+router.get("/sa3/vendedor/:id", async(req, res)=>{
+    try {
+        res.json(await comercialModel.sa3Id(req.params.id));
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
 router.get("/sa3/update", async(req, res)=>{
     try {
         const today = new Date();
@@ -518,6 +527,16 @@ router.get("/sa3/update", async(req, res)=>{
         }
 
         res.json(await comercialModel.sa3());
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
+router.post("/sa3/api/update", async(req, res)=>{
+    try {
+        await axios.put(process.env.APITOTVS + `CONSULTA_SA3/update`, req.body, {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}, Headers: {"tenantid": `01, 0101001, ailton souza, ${process.env.SENHAPITOTVS}`, "x-erp-module": "FAT"}});
+        res.sendStatus(200)
     } catch (error) {
         console.log(error);
         res.sendStatus(500);

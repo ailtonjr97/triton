@@ -187,7 +187,14 @@ const tamanhoTabela = async()=>{
 
 const sa3 = async()=>{
     const conn = await connect();
-    const [rows] = await conn.query(`SELECT id, filial, cod, nome FROM sa3 WHERE R_E_C_D_E_L_ = 0`);
+    const [rows] = await conn.query(`SELECT id, filial, cod, nome, email FROM sa3 WHERE R_E_C_D_E_L_ = 0`);
+    conn.end();
+    return rows;
+};
+
+const sa3Id = async(id)=>{
+    const conn = await connect();
+    const [rows] = await conn.query(`SELECT * FROM sa3 WHERE id = ${id}`);
     conn.end();
     return rows;
 };
@@ -263,5 +270,6 @@ module.exports = {
     insertSa3,
     truncateSa3,
     updateSa3,
-    tamanhoTabela
+    tamanhoTabela,
+    sa3Id
 };
