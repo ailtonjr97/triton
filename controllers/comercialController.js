@@ -422,7 +422,22 @@ router.get("/sa3/update", async(req, res)=>{
         let values = [];
         response.data.objects.forEach(response => {
             values.push(
-                {"filial": response.filial, "cod": response.cod, "nome": response.nome}
+                {
+                    "filial": response.filial,
+                    "cod": response.cod,
+                    "nome": response.nome,
+                    "nreduz": response.nreduz,
+                    "end": response.end,
+                    "bairro": response.bairro,
+                    "mun": response.mun,
+                    "est": response.est,
+                    "cep": response.cep,
+                    "dddtel": response.dddtel,
+                    "tel": response.tel,
+                    "email": response.email,
+                    "R_E_C_N_O_": response.R_E_C_N_O_,
+                    "R_E_C_D_E_L_": response.R_E_C_D_E_L_
+                }
             )
         });
 
@@ -431,23 +446,25 @@ router.get("/sa3/update", async(req, res)=>{
             values.splice(0, limitArray)
         }
 
-/*         //insert de registros SOMENTE SE a tabela estiver vazia
-        for(let i = 0; i < tam_sa3.data.objects.length; i++){
-            await comercialModel.insertSa3(
-                tam_sa3.data.objects[i].filial,
-                tam_sa3.data.objects[i].cod, 
-                tam_sa3.data.objects[i].nome,
-                tam_sa3.data.objects[i].nreduz,
-                tam_sa3.data.objects[i].end,
-                tam_sa3.data.objects[i].bairro,
-                tam_sa3.data.objects[i].mun,
-                tam_sa3.data.objects[i].est,
-                tam_sa3.data.objects[i].cep,
-                tam_sa3.data.objects[i].dddtel,
-                tam_sa3.data.objects[i].tel,
-                tam_sa3.data.objects[i].email
-            )
-        } */
+        // //insert de registros SOMENTE SE a tabela estiver vazia ou for adicionada uma nova coluna na tabela local
+        // for(let i = 0; i < tam_sa3.data.objects.length; i++){
+        //     await comercialModel.insertSa3(
+        //         tam_sa3.data.objects[i].filial,
+        //         tam_sa3.data.objects[i].cod, 
+        //         tam_sa3.data.objects[i].nome,
+        //         tam_sa3.data.objects[i].nreduz,
+        //         tam_sa3.data.objects[i].end,
+        //         tam_sa3.data.objects[i].bairro,
+        //         tam_sa3.data.objects[i].mun,
+        //         tam_sa3.data.objects[i].est,
+        //         tam_sa3.data.objects[i].cep,
+        //         tam_sa3.data.objects[i].dddtel,
+        //         tam_sa3.data.objects[i].tel,
+        //         tam_sa3.data.objects[i].email,
+        //         tam_sa3.data.objects[i].R_E_C_N_O_,
+        //         tam_sa3.data.objects[i].R_E_C_D_E_L_
+        //     )
+        // } 
 
         //insert de registros q não existem ainda
         if(diferencaTabelas != 0){
@@ -455,7 +472,18 @@ router.get("/sa3/update", async(req, res)=>{
                 await comercialModel.insertSa3(
                     values[i].filial,
                     values[i].cod, 
-                    values[i].nome
+                    values[i].nome,
+                    values[i].nreduz,
+                    values[i].end,
+                    values[i].bairro,
+                    values[i].mun,
+                    values[i].est,
+                    values[i].cep,
+                    values[i].dddtel,
+                    values[i].tel,
+                    values[i].email,
+                    values[i].R_E_C_N_O_,
+                    values[i].R_E_C_D_E_L_
                 )
             }
         }
@@ -474,7 +502,9 @@ router.get("/sa3/update", async(req, res)=>{
                 response.data.objects[i].cep,
                 response.data.objects[i].dddtel,
                 response.data.objects[i].tel,
-                response.data.objects[i].email
+                response.data.objects[i].email,
+                response.data.objects[i].R_E_C_N_O_,
+                response.data.objects[i].R_E_C_D_E_L_
             )
         }
 

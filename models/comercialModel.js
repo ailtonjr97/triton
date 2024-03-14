@@ -187,7 +187,7 @@ const tamanhoTabela = async()=>{
 
 const sa3 = async()=>{
     const conn = await connect();
-    const [rows] = await conn.query(`SELECT id, filial, cod, nome FROM sa3`);
+    const [rows] = await conn.query(`SELECT id, filial, cod, nome FROM sa3 WHERE R_E_C_D_E_L_ = 0`);
     conn.end();
     return rows;
 };
@@ -198,17 +198,28 @@ const truncateSa3 = async(values)=>{
     conn.end();
 }
 
-const insertSa3 = async(filial, cod, nome)=>{
+const insertSa3 = async(filial, cod, nome, nreduz, end, bairro, mun, est, cep, dddtel, tel, email, R_E_C_N_O_, R_E_C_D_E_L_)=>{
     const conn = await connect();
     await conn.query(`INSERT INTO docspro.sa3 (
-        filial, 
+        filial,
         cod,
-        nome
-    ) VALUES ('${filial}', '${cod}', '${nome}')`);
+        nome,
+        nreduz,
+        end,
+        bairro,
+        mun,
+        est,
+        cep,
+        dddtel,
+        tel,
+        email,
+        R_E_C_N_O_,
+        R_E_C_D_E_L_
+    ) VALUES ('${filial}', '${cod}', '${nome}', '${nreduz}', '${end}', '${bairro}', '${mun}', '${est}', '${cep}', '${dddtel}', '${tel}', '${email}', '${R_E_C_N_O_}', '${R_E_C_D_E_L_}')`);
     conn.end();
 }
 
-const updateSa3 = async(filial, cod, nome, nreduz, end, bairro, mun, est, cep, dddtel, tel, email)=>{
+const updateSa3 = async(filial, cod, nome, nreduz, end, bairro, mun, est, cep, dddtel, tel, email, R_E_C_N_O_, R_E_C_D_E_L_)=>{
     const conn = await connect();
     await conn.query(`
         UPDATE docspro.sa3 SET
@@ -223,10 +234,12 @@ const updateSa3 = async(filial, cod, nome, nreduz, end, bairro, mun, est, cep, d
         cep = ?,
         dddtel = ?,
         tel = ?,
-        email = ?
+        email = ?,
+        R_E_C_N_O_ = ?,
+        R_E_C_D_E_L_ = ?
         WHERE cod = ?
         and filial = ?
-    `, [filial, cod, nome, nreduz, end, bairro, mun, est, cep, dddtel, tel, email, cod, filial]);
+    `, [filial, cod, nome, nreduz, end, bairro, mun, est, cep, dddtel, tel, email, R_E_C_N_O_, R_E_C_D_E_L_, cod, filial]);
     conn.end();
 };
 
