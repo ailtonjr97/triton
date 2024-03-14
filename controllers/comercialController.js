@@ -408,7 +408,16 @@ router.get("/sa3", async(req, res)=>{
 
 router.get("/sa3/update", async(req, res)=>{
     try {
-        const hoje = new Date(Date.now()).toLocaleString().split(',')[0];
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        let mm = today.getMonth() + 1; // Months start at 0!
+        let dd = today.getDate();
+
+        if (dd < 10) dd = '0' + dd;
+        if (mm < 10) mm = '0' + mm;
+
+        const hoje = dd + '/' + mm + '/' + yyyy;
+
         const response = await axios.get(process.env.APITOTVS + `CONSULTA_SA3/get_all?updated_at=${hoje}&limit=10000`,
         {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
 
