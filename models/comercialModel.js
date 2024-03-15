@@ -250,6 +250,23 @@ const updateSa3 = async(filial, cod, nome, nreduz, end, bairro, mun, est, cep, d
     conn.end();
 };
 
+const tableUpdate = async(tabela)=>{
+    const conn = await connect();
+    const [rows] = await conn.query(`select date as 'data' from tables_update WHERE table_name = '${tabela}'`);
+    conn.end();
+    return rows;
+};
+
+const tableUpdateAtualiza = async(tabela, hoje)=>{
+    const conn = await connect();
+    await conn.query(`
+        UPDATE docspro.tables_update SET
+        date = ?
+        WHERE table_name = ?
+    `, [hoje, tabela]);
+    conn.end();
+};
+
 module.exports = {
     all,
     search,
@@ -271,5 +288,7 @@ module.exports = {
     truncateSa3,
     updateSa3,
     tamanhoTabela,
-    sa3Id
+    sa3Id,
+    tableUpdate,
+    tableUpdateAtualiza
 };

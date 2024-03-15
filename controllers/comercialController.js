@@ -427,7 +427,10 @@ router.get("/sa3/update", async(req, res)=>{
 
         const hoje = dd + '/' + mm + '/' + yyyy;
 
-        const response = await axios.get(process.env.APITOTVS + `CONSULTA_SA3/get_all?updated_at=${hoje}&limit=10000`,
+        const periodo = await comercialModel.tableUpdate('sa3')
+        await comercialModel.tableUpdateAtualiza('sa3', hoje)
+
+        const response = await axios.get(process.env.APITOTVS + `CONSULTA_SA3/get_all?updated_at=${periodo[0].data}&limit=10000`,
         {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
 
         const tam_sa3 = await axios.get(process.env.APITOTVS + `CONSULTA_SA3/get_all?limit=10000`,
@@ -536,6 +539,16 @@ router.get("/sa3/update", async(req, res)=>{
 router.post("/sa3/api/update", async(req, res)=>{
     try {
         await axios.put(process.env.APITOTVS + `CONSULTA_SA3/update`, req.body, {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}, Headers: {"tenantid": `01, 0101001, ailton souza, ${process.env.SENHAPITOTVS}`, "x-erp-module": "FAT"}});
+        res.sendStatus(200)
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
+router.post("/sa3/api/delete", async(req, res)=>{
+    try {
+        await axios.delete(process.env.APITOTVS + `CONSULTA_SA3/delete`, {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}, Headers: {"tenantid": `01, 0101001, ailton souza, ${process.env.SENHAPITOTVS}`, "x-erp-module": "FAT"}, data: req.body});
         res.sendStatus(200)
     } catch (error) {
         console.log(error);
