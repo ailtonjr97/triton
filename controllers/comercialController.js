@@ -556,4 +556,21 @@ router.post("/sa3/api/delete", async(req, res)=>{
     }
 });
 
+router.get("/sa3/pesquisa", async(req, res)=>{
+    try {
+        if(!req.query.codigo) req.query.codigo = '';
+        if(!req.query.nome) req.query.nome = '';
+        if(!req.query.email) req.query.email = '';
+        const response = await axios.get(process.env.APITOTVS + `CONSULTA_SA3/get_all?codigo=${req.query.codigo}&nome=${req.query.nome}&email=${req.query.email}&limit=10000`,
+        {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        res.json(response.data.objects);
+    } catch (error) {
+        if(error.response.status = 404){
+            res.json([]);
+        }else{
+            res.sendStatus(500);
+        }
+    }
+});
+
 module.exports = router;
