@@ -538,7 +538,22 @@ router.get("/sa3/update", async(req, res)=>{
 
 router.post("/sa3/api/update", async(req, res)=>{
     try {
+        if(req.body.A3_CEP == '        ') req.body.A3_CEP = '82325200'
         await axios.put(process.env.APITOTVS + `CONSULTA_SA3/update`, req.body, {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}, Headers: {"tenantid": `01, 0101001, ailton souza, ${process.env.SENHAPITOTVS}`, "x-erp-module": "FAT"}});
+        res.sendStatus(200)
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
+router.post("/sa3/api/insert", async(req, res)=>{
+    try {
+        const response = await axios.get(process.env.APITOTVS + `CONSULTA_SA3/get_cod`,
+        {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        console.log(response.data.objects[0].cod)
+
+        //await axios.put(process.env.APITOTVS + `CONSULTA_SA3/update`, req.body, {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}, Headers: {"tenantid": `01, 0101001, ailton souza, ${process.env.SENHAPITOTVS}`, "x-erp-module": "FAT"}});
         res.sendStatus(200)
     } catch (error) {
         console.log(error);
