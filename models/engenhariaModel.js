@@ -6,7 +6,7 @@ async function connect(){
     const pool = mysql.createPool({
         host: process.env.SQLHOST,
         port: '3306',
-        user: 'docs_admin',
+        user: process.env.SQLUSER,
         password: process.env.SQLPASSWORD,
         database: process.env.SQLDATABASE,
         waitForConnections: true,

@@ -72,7 +72,7 @@ app.use("/qualidade", cors(corsOptions), authenticationMiddleware, qualidade);
 app.use("/chamados", cors(corsOptions), authenticationMiddleware, chamados);
 app.use("/korp", cors(corsOptions), authenticationMiddleware, korp);
 app.use("/engenharia", cors(corsOptions), authenticationMiddleware, engenharia);
-app.use("/totvs", cors(corsOptions), authenticationMiddlewareApi, totvs);
+app.use("/totvs", cors(corsOptions), totvs);
 app.use("/comercial", cors(corsOptions), authenticationMiddleware, comercial);
 app.use("/files", cors(corsOptions), files);
 

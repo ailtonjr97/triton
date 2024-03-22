@@ -6,7 +6,7 @@ async function connect(){
     const pool = mysql.createPool({
         host: process.env.SQLHOST,
         port: '3306',
-        user: 'docs_admin',
+        user: process.env.SQLUSER,
         password: process.env.SQLPASSWORD,
         database: process.env.SQLDATABASE,
         waitForConnections: true,
@@ -24,35 +24,35 @@ connect();
 
 const all = async()=>{
     const conn = await connect();
-    const [rows] = await conn.query('SELECT * FROM docspro.apis_totvs');
+    const [rows] = await conn.query('SELECT * FROM PRODUCAO.apis_totvs');
     conn.end();
     return rows;
 }
 
 const create = async(body)=>{
     const conn = await connect();
-    await conn.query(`INSERT INTO docspro.apis_totvs(metodo, descricao, caminho) VALUES (?, ?, ?)`, [body.metodo, body.descricao, body.caminho]);
+    await conn.query(`INSERT INTO PRODUCAO.apis_totvs(metodo, descricao, caminho) VALUES (?, ?, ?)`, [body.metodo, body.descricao, body.caminho]);
     conn.end();
 }
 
 const get = async(tableName)=>{
     const conn = await connect();
-    const [rows] = await conn.query(`SELECT * FROM docspro.${tableName}`);
+    const [rows] = await conn.query(`SELECT * FROM PRODUCAO.${tableName}`);
     conn.end();
     return rows;
 }
 
 const getOne = async(tableName, id)=>{
     const conn = await connect();
-    const [rows] = await conn.query(`SELECT * FROM docspro.${tableName} WHERE id = ${id}`);
+    const [rows] = await conn.query(`SELECT * FROM PRODUCAO.${tableName} WHERE id = ${id}`);
     conn.end();
     return rows;
 }
 
 const updateAcy = async(values)=>{
     const conn = await connect();
-    await conn.query("TRUNCATE docspro.acy");
-    await conn.query("INSERT INTO docspro.acy (grpven, descri) VALUES ?", [values], function(err) {
+    await conn.query("TRUNCATE PRODUCAO.acy");
+    await conn.query("INSERT INTO PRODUCAO.acy (grpven, descri) VALUES ?", [values], function(err) {
         if (err) throw err;
     });
     conn.end();
@@ -60,8 +60,8 @@ const updateAcy = async(values)=>{
 
 const updateD12 = async(values)=>{
     const conn = await connect();
-    await conn.query("TRUNCATE docspro.d12");
-    await conn.query(`INSERT INTO docspro.d12 (
+    await conn.query("TRUNCATE PRODUCAO.d12");
+    await conn.query(`INSERT INTO PRODUCAO.d12 (
         filial, 
         produt,
         lotect,
@@ -83,8 +83,8 @@ const updateD12 = async(values)=>{
 
 const updateD14 = async(values)=>{
     const conn = await connect();
-    await conn.query("TRUNCATE docspro.d14");
-    await conn.query(`INSERT INTO docspro.d14 (
+    await conn.query("TRUNCATE PRODUCAO.d14");
+    await conn.query(`INSERT INTO PRODUCAO.d14 (
         filial, 
         local,
         ender,
@@ -104,8 +104,8 @@ const updateD14 = async(values)=>{
 
 const updateDcf = async(values)=>{
     const conn = await connect();
-    await conn.query("TRUNCATE docspro.dcf");
-    await conn.query(`INSERT INTO docspro.dcf (
+    await conn.query("TRUNCATE PRODUCAO.dcf");
+    await conn.query(`INSERT INTO PRODUCAO.dcf (
         filial, 
         lotect,
         servic,
@@ -127,8 +127,8 @@ const updateDcf = async(values)=>{
 
 const updateSe4 = async(values)=>{
     const conn = await connect();
-    await conn.query("TRUNCATE docspro.se4");
-    await conn.query(`INSERT INTO docspro.se4 (
+    await conn.query("TRUNCATE PRODUCAO.se4");
+    await conn.query(`INSERT INTO PRODUCAO.se4 (
         filial, 
         codigo,
         tipo,
@@ -140,8 +140,9 @@ const updateSe4 = async(values)=>{
 
 const updateSb1 = async(values)=>{
     const conn = await connect();
-    await conn.query("TRUNCATE docspro.sb1");
-    await conn.query(`INSERT INTO docspro.sb1 (
+    await conn.query("TRUNCATE PRODUCAO.sb1");
+    console.log('truncado')
+    await conn.query(`INSERT INTO PRODUCAO.sb1 (
         cod, 
         tipo,
         um,
@@ -156,8 +157,8 @@ const updateSb1 = async(values)=>{
 
 const updateSa1 = async(values)=>{
     const conn = await connect();
-    await conn.query("TRUNCATE docspro.sa1");
-    await conn.query(`INSERT INTO docspro.sa1 (
+    await conn.query("TRUNCATE PRODUCAO.sa1");
+    await conn.query(`INSERT INTO PRODUCAO.sa1 (
         cod, 
         nome,
         cod_mun,
@@ -179,8 +180,8 @@ const updateSa1 = async(values)=>{
 
 const updateSc5 = async(values)=>{
     const conn = await connect();
-    await conn.query("TRUNCATE docspro.sc5");
-    await conn.query(`INSERT INTO docspro.sc5(
+    await conn.query("TRUNCATE PRODUCAO.sc5");
+    await conn.query(`INSERT INTO PRODUCAO.sc5(
         nota, 
         tpfrete,
         condpag,
@@ -202,8 +203,8 @@ const updateSc5 = async(values)=>{
 
 const updateSc6 = async(values)=>{
     const conn = await connect();
-    await conn.query("TRUNCATE docspro.sc6");
-    await conn.query(`INSERT INTO docspro.sc6(
+    await conn.query("TRUNCATE PRODUCAO.sc6");
+    await conn.query(`INSERT INTO PRODUCAO.sc6(
         loja,
         num,
         item,
@@ -228,8 +229,8 @@ const updateSc6 = async(values)=>{
 
 const updateSc9 = async(values)=>{
     const conn = await connect();
-    await conn.query("TRUNCATE docspro.sc9");
-    await conn.query(`INSERT INTO docspro.sc9(
+    await conn.query("TRUNCATE PRODUCAO.sc9");
+    await conn.query(`INSERT INTO PRODUCAO.sc9(
         filial,
         pedido,
         item,
@@ -248,8 +249,8 @@ const updateSc9 = async(values)=>{
 
 const updateSf2 = async(values)=>{
     const conn = await connect();
-    await conn.query("TRUNCATE docspro.sf2");
-    await conn.query(`INSERT INTO docspro.sf2(
+    await conn.query("TRUNCATE PRODUCAO.sf2");
+    await conn.query(`INSERT INTO PRODUCAO.sf2(
         emissao,
         filial,
         chvnfe,
@@ -293,8 +294,8 @@ const getSx5 = async(tabela, chave)=>{
 
 const updateSx5 = async(values)=>{
     const conn = await connect();
-    await conn.query("TRUNCATE docspro.sx5");
-    await conn.query(`INSERT INTO docspro.sx5(
+    await conn.query("TRUNCATE PRODUCAO.sx5");
+    await conn.query(`INSERT INTO PRODUCAO.sx5(
         filial,
         tabela,
         chave,

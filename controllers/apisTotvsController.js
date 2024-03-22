@@ -2,6 +2,7 @@ const express = require("express");
 const ApisTotvs = require("../models/apisTotvsModel")
 const router = express.Router();
 const axios = require('axios');
+const fs = require('node:fs/promises');
 
 router.get("/api/lista", async(req, res)=>{
     try {
