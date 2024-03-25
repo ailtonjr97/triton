@@ -231,6 +231,7 @@ router.get("/clientes/:numped", async(req, res)=>{
         const response = await axios.get(process.env.APITOTVS + "CONSULTA_SA1/get_id?id=" + req.params.numped, {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
         res.send(response.data)
     } catch (error) {
+        console.log(error)
         res.sendStatus(500);
     }
 });
