@@ -589,4 +589,13 @@ router.get("/sa3/pesquisa", async(req, res)=>{
     }
 });
 
+router.get("/track_order/get_all", async(req, res)=>{
+    try {
+        res.json(await comercialModel.trackOrder());
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
 module.exports = router;

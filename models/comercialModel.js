@@ -267,6 +267,13 @@ const tableUpdateAtualiza = async(tabela, hoje)=>{
     conn.end();
 };
 
+const trackOrder = async()=>{
+    const conn = await connect();
+    const [rows] = await conn.query(`SELECT * FROM track_order`);
+    conn.end();
+    return rows;
+};
+
 module.exports = {
     all,
     search,
@@ -290,5 +297,6 @@ module.exports = {
     tamanhoTabela,
     sa3Id,
     tableUpdate,
-    tableUpdateAtualiza
+    tableUpdateAtualiza,
+    trackOrder
 };
