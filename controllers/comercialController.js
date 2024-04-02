@@ -598,4 +598,14 @@ router.get("/track_order/get_all", async(req, res)=>{
     }
 });
 
+router.get("/api/sc5/get_id", async(req, res)=>{
+    try {
+        const response = await axios.get(process.env.APITOTVS + `CONSULTA_SA3/get_all?codigo=${req.query.codigo}&nome=${req.query.nome}&email=${req.query.email}&limit=10000`,
+        {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+})
+
 module.exports = router;
