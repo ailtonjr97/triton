@@ -591,21 +591,13 @@ router.get("/sa3/pesquisa", async(req, res)=>{
 
 router.get("/track_order/get_all", async(req, res)=>{
     try {
-        res.json(await comercialModel.trackOrder());
+        const response = await axios.get(process.env.APITOTVS + `CONSULTA_SC5/get_track`,
+        {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        res.json(response.data.objects);
     } catch (error) {
         console.log(error);
         res.sendStatus(500);
     }
 });
-
-router.get("/api/sc5/get_id", async(req, res)=>{
-    try {
-        const response = await axios.get(process.env.APITOTVS + `CONSULTA_SA3/get_all?codigo=${req.query.codigo}&nome=${req.query.nome}&email=${req.query.email}&limit=10000`,
-        {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
-    } catch (error) {
-        console.log(error);
-        res.sendStatus(500);
-    }
-})
 
 module.exports = router;
