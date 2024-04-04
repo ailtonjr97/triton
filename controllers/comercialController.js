@@ -591,9 +591,38 @@ router.get("/sa3/pesquisa", async(req, res)=>{
 
 router.get("/track_order/get_all", async(req, res)=>{
     try {
-        const response = await axios.get(process.env.APITOTVS + `CONSULTA_SC5/get_track`,
+        const filterArray = (array, fields, value) => {
+            fields = Array.isArray(fields) ? fields : [fields];
+            return array.filter((item) => fields.some((field) => item[field] === value));
+        };
+        
+        let values = [];
+        const sc5 = await axios.get(process.env.APITOTVS + `CONSULTA_SC5/get_track`,
         {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
-        res.json(response.data.objects);
+
+        const sc6 = await axios.get(process.env.APITOTVS + `CONSULTA_SC6/get_track`,
+        {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+
+        sc5.data.objects.forEach(response => {
+            values.push({
+                C5_FILIAL: response.C5_FILIAL,
+                C5_NUM: response.C5_NUM,
+                R_E_C_N_O_: response.R_E_C_N_O_,
+                C5_XSEPCD: response.C5_XSEPCD,
+                itens: [
+                ]
+            })
+        });
+
+        values.forEach(element => {
+            let filtrado = filterArray(sc6.data.objects, 'C6_NUM', element.C5_NUM)
+            filtrado = filterArray(filtrado, 'C6_FILIAL', element.C5_FILIAL)
+            element.itens.push(
+                filtrado
+            )
+        });
+
+        res.json(values);
     } catch (error) {
         console.log(error);
         res.sendStatus(500);
