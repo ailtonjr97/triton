@@ -629,4 +629,30 @@ router.get("/track_order/get_all", async(req, res)=>{
     }
 });
 
+router.get("/track_order/update_c6xsepcd/:filial/:num/:item/:produto", async(req, res)=>{
+    try {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        let mm = today.getMonth() + 1; // Months start at 0!
+        let dd = today.getDate();
+        let minutes = today.getMinutes();
+        let hour = today.getHours();
+
+        if (dd < 10) dd = '0' + dd;
+        if (mm < 10) mm = '0' + mm;
+
+        const hoje = dd + '/' + mm + '/' + yyyy;
+        const hora = hour + ':' + minutes
+        let horarioAtual = hoje + ' ' + hora
+        await axios.put(process.env.APITOTVS + `CONSULTA_SC6/update_xsepcd?filial=${req.params.filial}&num=${req.params.num}&item=${req.params.item}&produto=${req.params.produto}&hora=${horarioAtual}`, '',
+        {
+            auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}, 
+        });
+        res.sendStatus(200)
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
 module.exports = router;
