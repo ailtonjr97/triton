@@ -609,6 +609,11 @@ router.get("/track_order/get_all", async(req, res)=>{
                 C5_NUM: response.C5_NUM,
                 R_E_C_N_O_: response.R_E_C_N_O_,
                 C5_XSEPCD: response.C5_XSEPCD,
+                C5_XLIBCOM: response.C5_XLIBCOM,
+                C5_XLIBFAT: response.C5_XLIBFAT,
+                C5_XFATURD: response.C5_XFATURD,
+                C5_XLIBEXP: response.C5_XLIBEXP,
+                C5_XEXPEDI: response.C5_XEXPEDI,
                 itens: [
                 ]
             })
@@ -647,6 +652,35 @@ router.get("/track_order/update_c6xsepcd/:filial/:num/:item/:produto", async(req
         await axios.put(process.env.APITOTVS + `CONSULTA_SC6/update_xsepcd?filial=${req.params.filial}&num=${req.params.num}&item=${req.params.item}&produto=${req.params.produto}&hora=${horarioAtual}`, '',
         {
             auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}, 
+        });
+
+        const listSepcd = await axios.get(process.env.APITOTVS + `CONSULTA_SC6/get_xsepcd?filial=${req.params.filial}&num=${req.params.num}`,
+        {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+
+        let values = []
+        listSepcd.data.objects.forEach(e => {
+            values.push(e.C6_XSEPCD)
+        });
+
+        if(!values.includes(false)){
+            await axios.put(process.env.APITOTVS + `CONSULTA_SC5/update_xsepcd?filial=${req.params.filial}&num=${req.params.num}`, '',
+            {
+                auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}, 
+            });
+        }
+
+        res.sendStatus(200)
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
+router.get("/track_order/update_campo/:filial/:num/:campo/:booleano", async(req, res)=>{
+    try {
+        await axios.put(process.env.APITOTVS + `CONSULTA_SC5/update_campo?filial=${req.params.filial}&num=${req.params.num}&campo=${req.params.campo}&booleano=${req.params.booleano}`, '',
+        {
+            auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS},
         });
         res.sendStatus(200)
     } catch (error) {
