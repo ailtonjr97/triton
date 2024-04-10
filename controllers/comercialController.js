@@ -597,7 +597,7 @@ router.get("/track_order/get_all", async(req, res)=>{
         };
         
         let values = [];
-        const sc5 = await axios.get(process.env.APITOTVS + `CONSULTA_SC5/get_track`,
+        const sc5 = await axios.get(process.env.APITOTVS + `CONSULTA_SC5/get_track?limit=${req.query.limit}`,
         {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
 
         const sc6 = await axios.get(process.env.APITOTVS + `CONSULTA_SC6/get_track`,
@@ -678,17 +678,7 @@ router.get("/track_order/update_c6xsepcd/:filial/:num/:item/:produto/:logado", a
         });
 
         if(!values.includes(false)){
-            await axios.put(process.env.APITOTVS + `CONSULTA_SC5/update_campo?filial=${req.params.filial}&num=${req.params.num}&campo=C5_XSEPCD&booleano=T`, '',
-            {
-                auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS},
-            });
-
-            await axios.put(process.env.APITOTVS + `CONSULTA_SC5/update_campo?filial=${req.params.filial}&num=${req.params.num}&campo=C5_XHSEPCD&booleano=${horarioAtual}`, '',
-            {
-                auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS},
-            });
-
-            await axios.put(process.env.APITOTVS + `CONSULTA_SC5/update_campo?filial=${req.params.filial}&num=${req.params.num}&campo=C5_XNSEPCD&booleano=${req.params.logado}`, '',
+            await axios.put(process.env.APITOTVS + `CONSULTA_SC5/update_campo?filial=${req.params.filial}&num=${req.params.num}&campo=C5_XSEPCD&booleano=T&logado=${req.params.logado}&campo_logado=C5_XNSEPCD&hora=${horarioAtual}&campo_hora=C5_XHSEPCD`, '',
             {
                 auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS},
             });
