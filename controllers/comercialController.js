@@ -597,8 +597,14 @@ router.get("/track_order/get_all", async(req, res)=>{
         };
         
         let values = [];
-        const sc5 = await axios.get(process.env.APITOTVS + `CONSULTA_SC5/get_track?limit=${req.query.limit}`,
-        {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        let sc5
+        if(req.query.pedido){
+            sc5 = await axios.get(process.env.APITOTVS + `CONSULTA_SC5/get_track?limit=${req.query.limit}&pedido=${req.query.pedido}`,
+            {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        }else{
+            sc5 = await axios.get(process.env.APITOTVS + `CONSULTA_SC5/get_track?limit=${req.query.limit}`,
+            {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        }
 
         const sc6 = await axios.get(process.env.APITOTVS + `CONSULTA_SC6/get_track`,
         {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
@@ -626,6 +632,7 @@ router.get("/track_order/get_all", async(req, res)=>{
                 C5_XEXPEDI: response.C5_XEXPEDI,
                 C5_XHEXPED: response.C5_XHEXPED,
                 C5_XNEXPED: response.C5_XNEXPED,
+                C5_FECENT: response.C5_FECENT,
                 itens: [
                 ]
             })
@@ -641,8 +648,11 @@ router.get("/track_order/get_all", async(req, res)=>{
 
         res.json(values);
     } catch (error) {
-        console.log(error);
-        res.sendStatus(500);
+        if(error.response.status == 404){
+            res.sendStatus(404);
+        }else{
+            res.sendStatus(500);
+        }
     }
 });
 
