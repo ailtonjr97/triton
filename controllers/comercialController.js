@@ -597,14 +597,8 @@ router.get("/track_order/get_all", async(req, res)=>{
         };
         
         let values = [];
-        let sc5
-        if(req.query.pedido){
-            sc5 = await axios.get(process.env.APITOTVS + `CONSULTA_SC5/get_track?limit=${req.query.limit}&pedido=${req.query.pedido}`,
-            {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
-        }else{
-            sc5 = await axios.get(process.env.APITOTVS + `CONSULTA_SC5/get_track?limit=${req.query.limit}`,
-            {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
-        }
+        const sc5 = await axios.get(process.env.APITOTVS + `CONSULTA_SC5/get_track?limit=${req.query.limit}&pedido=${req.query.pedido}&data_ent=${req.query.data_ent}`,
+        {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
 
         const sc6 = await axios.get(process.env.APITOTVS + `CONSULTA_SC6/get_track`,
         {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
@@ -614,6 +608,7 @@ router.get("/track_order/get_all", async(req, res)=>{
                 C5_FILIAL: response.C5_FILIAL,
                 C5_NUM: response.C5_NUM,
                 R_E_C_N_O_: response.R_E_C_N_O_,
+                R_E_C_D_E_L_: response.R_E_C_D_E_L_,
                 C5_XSEPCD: response.C5_XSEPCD,
                 C5_XHSEPCD: response.C5_XHSEPCD,
                 C5_XNSEPCD: response.C5_XNSEPCD,
@@ -638,16 +633,19 @@ router.get("/track_order/get_all", async(req, res)=>{
             })
         });
 
+        let filtrado = []
         values.forEach(element => {
-            let filtrado = filterArray(sc6.data.objects, 'C6_NUM', element.C5_NUM)
+            filtrado = filterArray(sc6.data.objects, 'C6_NUM', element.C5_NUM)
             filtrado = filterArray(filtrado, 'C6_FILIAL', element.C5_FILIAL)
             element.itens.push(
                 filtrado
             )
         });
 
+        values = values.filter(item => item.R_E_C_D_E_L_ == 0)
         res.json(values);
     } catch (error) {
+        console.log(error)
         if(error.response.status == 404){
             res.sendStatus(404);
         }else{
