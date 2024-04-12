@@ -595,10 +595,34 @@ router.get("/track_order/get_all", async(req, res)=>{
             fields = Array.isArray(fields) ? fields : [fields];
             return array.filter((item) => fields.some((field) => item[field] === value));
         };
+
+        function formatDate (input) {
+            let datePart = input.match(/\d+/g),
+            year = datePart[0], // get only two digits
+            month = datePart[1], day = datePart[2];
+            
+            return day+'/'+month+'/'+year;
+        }
+
+        function formatDateProtheus (input) {
+            let datePart = input.match(/\d+/g),
+            year = datePart[0], // get only two digits
+            month = datePart[1], day = datePart[2];
+            
+            let data = year+month+day
+            let dataString = String(data)
+            return dataString;
+        }
         
         let values = [];
-        const sc5 = await axios.get(process.env.APITOTVS + `CONSULTA_SC5/get_track?limit=${req.query.limit}&pedido=${req.query.pedido}&data_ent=${req.query.data_ent}`,
-        {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        let sc5;
+        if(!req.query.data_ent){
+            sc5 = await axios.get(process.env.APITOTVS + `CONSULTA_SC5/get_track?limit=${req.query.limit}&pedido=${req.query.pedido}&data_ent=&filial=${req.query.filial}`,
+            {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        }else{
+            sc5 = await axios.get(process.env.APITOTVS + `CONSULTA_SC5/get_track?limit=${req.query.limit}&pedido=${req.query.pedido}&data_ent=${formatDateProtheus(req.query.data_ent)}&filial=${req.query.filial}`,
+            {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        }
 
         const sc6 = await axios.get(process.env.APITOTVS + `CONSULTA_SC6/get_track`,
         {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
@@ -627,7 +651,7 @@ router.get("/track_order/get_all", async(req, res)=>{
                 C5_XEXPEDI: response.C5_XEXPEDI,
                 C5_XHEXPED: response.C5_XHEXPED,
                 C5_XNEXPED: response.C5_XNEXPED,
-                C5_FECENT: response.C5_FECENT,
+                C5_FECENT: formatDate (response.C5_FECENT),
                 itens: [
                 ]
             })
@@ -645,7 +669,6 @@ router.get("/track_order/get_all", async(req, res)=>{
         values = values.filter(item => item.R_E_C_D_E_L_ == 0)
         res.json(values);
     } catch (error) {
-        console.log(error)
         if(error.response.status == 404){
             res.sendStatus(404);
         }else{
