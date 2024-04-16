@@ -7,6 +7,24 @@ const fs = require('fs')
 const PDFKit = require('pdfkit');
 const axios = require('axios');
 
+function formatDate (input) {
+    let datePart = input.match(/\d+/g),
+    year = datePart[0], // get only two digits
+    month = datePart[1], day = datePart[2];
+    
+    return day+'/'+month+'/'+year;
+}
+
+function formatDateProtheus (input) {
+    let datePart = input.match(/\d+/g),
+    year = datePart[0], // get only two digits
+    month = datePart[1], day = datePart[2];
+    
+    let data = year+month+day
+    let dataString = String(data)
+    return dataString;
+}
+
 router.get("/proposta-de-frete", async(req, res)=>{
     try {
         res.json(await comercialModel.all());
@@ -752,5 +770,42 @@ router.get("/track_order/update_campo/:filial/:num/:campo/:booleano/:logado/:cam
         res.sendStatus(500);
     }
 });
+
+////////////////////////////////////////
+//Orçamentos
+router.get("/orcamentos/created", async(req, res)=>{
+    try {
+        let scj;
+        if(!req.query.dt_emissao){
+            scj = await axios.get(process.env.APITOTVS + `CONSULTA_SCJ/integrador?filial=${req.query.filial}&numero=${req.query.numero}&dt_emissao=&cliente=${req.query.cliente}&limit=${req.query.limit}`,
+            {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        }else{
+            scj = await axios.get(process.env.APITOTVS + `CONSULTA_SCJ/integrador?filial=${req.query.filial}&numero=${req.query.numero}&dt_emissao=${formatDateProtheus(req.query.dt_emissao)}&cliente=${req.query.cliente}&limit=${req.query.limit}`,
+            {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        }
+
+        let values = [];
+        scj.data.objects.forEach(response => {
+            values.push({
+                CJ_FILIAL: response.CJ_FILIAL,
+                CJ_NUM: response.CJ_NUM,
+                CJ_EMISSAO: formatDate(response.CJ_EMISSAO),
+                CJ_CLIENTE: response.CJ_CLIENTE,
+                R_E_C_N_O_: response.R_E_C_N_O_,
+                R_E_C_D_E_L_: response.R_E_C_D_E_L_,
+            })
+        });
+
+        values = values.filter(item => item.R_E_C_D_E_L_ == 0)
+        res.json(values);
+    } catch (error) {
+        if(error.response.status == 404){
+            res.sendStatus(404);
+        }else{
+            res.sendStatus(500);
+        }
+    }
+});
+///////////////////////////////////////
 
 module.exports = router;
