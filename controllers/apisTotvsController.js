@@ -486,9 +486,9 @@ router.post("/api/sx5/update", async(req, res)=>{
     }
 })
 
-router.get("/companies", async(req, res)=>{
+router.get("/status", async(req, res)=>{
     try {
-        const statusTotvs = await axios.get(process.env.APITOTVS + "api/framework/environment/v1/companies", {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        const statusTotvs = await axios.get(process.env.APITOTVS + "status/status", {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
         res.json(statusTotvs.data);
     } catch (error) {
         console.log(error);

@@ -791,6 +791,7 @@ router.get("/orcamentos/created", async(req, res)=>{
                 CJ_NUM: response.CJ_NUM,
                 CJ_EMISSAO: formatDate(response.CJ_EMISSAO),
                 CJ_CLIENTE: response.CJ_CLIENTE,
+                CJ_LOJA: response.CJ_LOJA,
                 R_E_C_N_O_: response.R_E_C_N_O_,
                 R_E_C_D_E_L_: response.R_E_C_D_E_L_,
             })
@@ -798,6 +799,20 @@ router.get("/orcamentos/created", async(req, res)=>{
 
         values = values.filter(item => item.R_E_C_D_E_L_ == 0)
         res.json(values);
+    } catch (error) {
+        if(error.response.status == 404){
+            res.sendStatus(404);
+        }else{
+            res.sendStatus(500);
+        }
+    }
+});
+
+router.get("/orcamentos/unico", async(req, res)=>{
+    try {
+        scj = await axios.get(process.env.APITOTVS + `CONSULTA_SCJ/unico?filial=${req.query.filial}&numero=${req.query.numero}&cliente=${req.query.cliente}&loja=${req.query.loja}`,
+        {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        res.json(scj.data)
     } catch (error) {
         if(error.response.status == 404){
             res.sendStatus(404);
