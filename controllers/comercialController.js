@@ -43,6 +43,16 @@ router.get("/proposta-de-frete-semrev", async(req, res)=>{
     }
 });
 
+router.post("/arquiva-frete", async(req, res)=>{
+    try {
+        await comercialModel.arquivaFrete(req.body.id)
+        res.sendStatus(200)
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
 router.get("/proposta-de-frete/pesquisa", async(req, res)=>{
     try {
         let resultados
@@ -810,15 +820,22 @@ router.get("/orcamentos/created", async(req, res)=>{
 
 router.get("/orcamentos/unico", async(req, res)=>{
     try {
-        scj = await axios.get(process.env.APITOTVS + `CONSULTA_SCJ/unico?filial=${req.query.filial}&numero=${req.query.numero}&cliente=${req.query.cliente}&loja=${req.query.loja}`,
+        let scj = await axios.get(process.env.APITOTVS + `CONSULTA_SCJ/unico?filial=${req.query.filial}&numero=${req.query.numero}&cliente=${req.query.cliente}&loja=${req.query.loja}`,
         {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
-        res.json(scj.data)
+
+        let values = [];
+        values.push({
+            CJ_FILIAL:  scj.data.objects[0].CJ_FILIAL,
+            CJ_NUM:     scj.data.objects[0].CJ_NUM,
+            CJ_EMISSAO: formatDate(scj.data.objects[0].CJ_EMISSAO),
+            CJ_CLIENTE: scj.data.objects[0].CJ_CLIENTE,
+            CJ_LOJA:    scj.data.objects[0].CJ_LOJA,
+        })
+
+        res.json(values[0]);
     } catch (error) {
-        if(error.response.status == 404){
-            res.sendStatus(404);
-        }else{
-            res.sendStatus(500);
-        }
+        console.log(error)
+        res.sendStatus(500);
     }
 });
 ///////////////////////////////////////
