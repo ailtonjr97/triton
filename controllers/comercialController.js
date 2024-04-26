@@ -839,6 +839,10 @@ router.get("/orcamentos/unico", async(req, res)=>{
             CJ_TABELA:  scj.data.objects[0].CJ_TABELA,
             CJ_TIPOCLI: scj.data.objects[0].CJ_TIPOCLI,
             CJ_TPFRETE: scj.data.objects[0].CJ_TPFRETE,
+            //CJ_XDESTAB
+            //CJ_XNOMVEM
+            CJ_XFREIMP: scj.data.objects[0].CJ_XFREIMP,
+            CJ_TIPLIB: scj.data.objects[0].CJ_TIPLIB,
         })
 
         res.json(values[0]);
