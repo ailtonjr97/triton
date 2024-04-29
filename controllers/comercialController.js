@@ -824,25 +824,12 @@ router.get("/orcamentos/unico", async(req, res)=>{
         {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
 
         let values = [];
+        scj.data.objects.forEach(element => {
+            values.push(element)
+        });
+
         values.push({
-            CJ_FILIAL:  scj.data.objects[0].CJ_FILIAL,
-            CJ_NUM:     scj.data.objects[0].CJ_NUM,
             CJ_EMISSAO: formatDate(scj.data.objects[0].CJ_EMISSAO),
-            CJ_CLIENTE: scj.data.objects[0].CJ_CLIENTE,
-            CJ_LOJA:    scj.data.objects[0].CJ_LOJA,
-            //CJ_NOMCLI
-            CJ_CLIENT:  scj.data.objects[0].CJ_CLIENT,
-            CJ_LOJAENT: scj.data.objects[0].CJ_LOJAENT,
-            CJ_CONDPAG: scj.data.objects[0].CJ_CONDPAG,
-            CJ_XESTADO: scj.data.objects[0].CJ_XESTADO,
-            CJ_XPVKORP: scj.data.objects[0].CJ_XPVKORP,
-            CJ_TABELA:  scj.data.objects[0].CJ_TABELA,
-            CJ_TIPOCLI: scj.data.objects[0].CJ_TIPOCLI,
-            CJ_TPFRETE: scj.data.objects[0].CJ_TPFRETE,
-            //CJ_XDESTAB
-            //CJ_XNOMVEM
-            CJ_XFREIMP: scj.data.objects[0].CJ_XFREIMP,
-            CJ_TIPLIB: scj.data.objects[0].CJ_TIPLIB,
         })
 
         res.json(values[0]);
