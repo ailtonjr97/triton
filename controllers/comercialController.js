@@ -823,6 +823,9 @@ router.get("/orcamentos/unico", async(req, res)=>{
         let scj = await axios.get(process.env.APITOTVS + `CONSULTA_SCJ/unico?filial=${req.query.filial}&numero=${req.query.numero}&cliente=${req.query.cliente}&loja=${req.query.loja}`,
         {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
 
+        let cliente = await axios.get(process.env.APITOTVS + `CONSULTA_SA1/get_id?id=${scj.data.objects[0].CJ_CLIENTE}`,
+        {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+
         let values = [];
         scj.data.objects.forEach(element => {
             values.push(element)
@@ -830,9 +833,10 @@ router.get("/orcamentos/unico", async(req, res)=>{
 
         values.push({
             CJ_EMISSAO: formatDate(scj.data.objects[0].CJ_EMISSAO),
+            NOME_CLIENTE: cliente.data.nome
         })
 
-        res.json(values[0]);
+        res.json([values[0], values[1]]);
     } catch (error) {
         console.log(error)
         res.sendStatus(500);
