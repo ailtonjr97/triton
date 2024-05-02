@@ -244,9 +244,9 @@ router.post("/proposta-de-frete/:id", async(req, res)=>{
     }
 });
 
-router.get("/sck/:numped", async(req, res)=>{
+router.get("/sck/:numped/:filial", async(req, res)=>{
     try {
-        const response = await axios.get(process.env.APITOTVS + "CONSULTA_SCK/get_all_id?idN=" + req.params.numped, {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
+        const response = await axios.get(process.env.APITOTVS + `CONSULTA_SCK/get_all_id?idN=${req.params.numped}&filial=${req.params.filial}`, {auth: {username: process.env.USERTOTVS, password: process.env.SENHAPITOTVS}});
         res.send(response.data)
     } catch (error) {
         console.log(error)
