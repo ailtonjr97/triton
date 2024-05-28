@@ -7,13 +7,16 @@ const router = express.Router();
 
 router.post("/login", async(req, res)=>{
     try {
-        const userPassword = await Users.passwordReturn(req.body.email);
-        const userId = await Users.getUserJwt(req.body.email);
-        if(bcrypt.compareSync(req.body.password, userPassword[0].password)){
+        const email = req.body[0].email;
+        const password = req.body[1].password;
+        const userPassword = await Users.passwordReturn(email);
+        const userId = await Users.getUserJwt(email);
+
+        if(bcrypt.compareSync(password, userPassword[0].password)){
             const token = jwt.sign({id: userId[0].id}, process.env.JWTSECRET, {expiresIn: 28800})
-            res.send(token)
+            res.send({'token': token})
         }else{
-            res.sendStatus(500)
+            res.sendStatus(401)
         }
     } catch (error) {
         console.log(error)

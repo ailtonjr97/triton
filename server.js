@@ -1,5 +1,5 @@
 const express = require("express");
-var cors = require('cors');
+const cors = require('cors');
 const bodyParser = require("body-parser");
 const jwt = require('jsonwebtoken')
 
@@ -10,21 +10,17 @@ const comercial = require("./routes/comercialRoutes.js");
 const files = require("./controllers/filesController.js");
 const { authenticationMiddleware, authenticationMiddlewareApi } = require('./middlewares/authentication.js');
 
-var corsOptions = {
-origin: [process.env.ORIGIN1, process.env.ORIGIN2, process.env.ORIGIN3],
-optionsSuccessStatus: 200
-}
-
 const app = express();
+app.use(cors());
 
 app.use(express.static("public"));
 app.use(bodyParser.json());
 
 
-app.use("/auth", cors(corsOptions), auth);
-app.use("/users", cors(corsOptions), authenticationMiddleware, users);
-app.use("/comercial", cors(corsOptions), authenticationMiddleware, comercial);
-app.use("/files", cors(corsOptions), files);
+app.use("/auth", auth);
+app.use("/users", authenticationMiddleware, users);
+app.use("/comercial", authenticationMiddleware, comercial);
+app.use("/files", files);
 
 
 
