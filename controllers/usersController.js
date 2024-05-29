@@ -25,8 +25,6 @@ router.get("/get_all/inactive", async(req, res)=>{
 
 router.get("/:id", async(req, res)=>{
     try {
-        console.log(req.params)
-        console.log(await Users.one(req.params.id))
         res.send(await Users.one(req.params.id));
     } catch (error) {
         console.log(error)
