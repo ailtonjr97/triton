@@ -6,7 +6,7 @@ async function grid(req, res) {
         const filial = !req.query.filial ? '' : req.query.filial;
         const numero = !req.query.numero ? '' : req.query.numero;
 
-        const response = await axios.get(`${process.env.APITOTVS}/MODULO_ORC/grid?filial=${filial}&numero=${numero}`, {
+        const response = await axios.get(`${process.env.APITOTVS}MODULO_ORC/grid?filial=${filial}&numero=${numero}`, {
             auth: {
                 username: process.env.USERTOTVS,
                 password: process.env.SENHAPITOTVS
@@ -27,7 +27,7 @@ async function orcamentoInfo(req, res) {
         const cliente = !req.query.cliente ? '' : req.query.cliente;
         const loja    = !req.query.loja    ? '' : req.query.loja;
 
-        const response = await axios.get(`${process.env.APITOTVS}/MODULO_ORC/unico?filial=${filial}&numero=${numero}&cliente=${cliente}&loja=${loja}`, {
+        const response = await axios.get(`${process.env.APITOTVS}MODULO_ORC/unico?filial=${filial}&numero=${numero}&cliente=${cliente}&loja=${loja}`, {
             auth: {
                 username: process.env.USERTOTVS,
                 password: process.env.SENHAPITOTVS
