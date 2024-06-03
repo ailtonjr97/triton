@@ -58,7 +58,11 @@ async function orcamentoInfo(req, res) {
             CJ_NUM:     apiObject.CJ_NUM,
             CJ_EMISSAO: convertDateFormat(apiObject.CJ_EMISSAO),
             CJ_CLIENTE: apiObject.CJ_CLIENTE,
-            CJ_LOJA:    apiObject.CJ_LOJA
+            CJ_LOJA:    apiObject.CJ_LOJA,
+            CJ_CLIENT:  apiObject.CJ_CLIENT,
+            CJ_LOJAENT: apiObject.CJ_LOJAENT,
+            CJ_CONDPAG: apiObject.CJ_CONDPAG,
+            CJ_TABELA:  apiObject.CJ_TABELA
         });
     } catch (error) {
         console.log(error);
@@ -68,10 +72,30 @@ async function orcamentoInfo(req, res) {
 
 async function cliente(req, res) {
     try {
+        let filial   = !req.query.filial   ? '' : req.query.filial;
         const cliente  = !req.query.cliente  ? '' : req.query.cliente;
         const loja     = !req.query.loja     ? '' : req.query.loja;
 
-        res.sendStatus(200)
+        filial = filial.substring(0, 4) //Tabela clientes só tem 4 digitos na coluna A1_FILIAL
+
+        const response = await axios.get(`${process.env.APITOTVS}/MODULO_ORC/cliente?filial=${filial}&cliente=${cliente}&loja=${loja}`, {
+            auth: {
+                username: process.env.USERTOTVS,
+                password: process.env.SENHAPITOTVS
+            }
+        });
+        
+        const item = response.data.objects[0]
+
+        res.json({
+            A1_COD:  item.A1_COD,
+            A1_NOME: item.A1_NOME.trimEnd(),
+            A1_CGC:  item.A1_CGC,
+            A1_END:  item.A1_END.trimEnd(),
+            A1_MUN:  item.A1_MUN.trimEnd(),
+            A1_EST:  item.A1_EST,
+            A1_CEP:  item.A1_CEP,
+        })
     } catch (error) {
         console.log(error);
         res.sendStatus(500);
