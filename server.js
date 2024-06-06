@@ -4,9 +4,9 @@ const bodyParser = require("body-parser");
 const jwt = require('jsonwebtoken')
 
 const users = require("./controllers/usersController.js");
-const qualidade = require("./controllers/qualidadeController.js");
 const auth = require("./controllers/authController.js");
 const comercial = require("./routes/comercialRoutes.js");
+const consulta = require("./routes/consultaRoutes.js");
 const files = require("./controllers/filesController.js");
 const { authenticationMiddleware, authenticationMiddlewareApi } = require('./middlewares/authentication.js');
 
@@ -19,6 +19,7 @@ app.use(bodyParser.json());
 
 app.use("/auth", auth);
 app.use("/users", authenticationMiddleware, users);
+app.use("/consulta", authenticationMiddleware, consulta);
 app.use("/comercial", authenticationMiddleware, comercial);
 app.use("/files", files);
 

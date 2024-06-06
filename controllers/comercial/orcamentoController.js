@@ -62,7 +62,12 @@ async function orcamentoInfo(req, res) {
             CJ_CLIENT:  apiObject.CJ_CLIENT,
             CJ_LOJAENT: apiObject.CJ_LOJAENT,
             CJ_CONDPAG: apiObject.CJ_CONDPAG,
-            CJ_TABELA:  apiObject.CJ_TABELA
+            CJ_TABELA:  apiObject.CJ_TABELA,
+            CJ_TPFRETE: apiObject.CJ_TPFRETE,
+            CJ_XREDESP: apiObject.CJ_XREDESP,
+            CJ_XVEND1:  apiObject.CJ_XVEND1,
+            CJ_TIPLIB:  apiObject.CJ_TIPLIB,
+            CJ_XESTADO: apiObject.CJ_XESTADO,
         });
     } catch (error) {
         console.log(error);
@@ -106,66 +111,8 @@ async function orcamentoItems(req, res) {
     }
 }
 
-async function cliente(req, res) {
-    try {
-        let filial   = !req.query.filial   ? '' : req.query.filial;
-        const cliente  = !req.query.cliente  ? '' : req.query.cliente;
-        const loja     = !req.query.loja     ? '' : req.query.loja;
-
-        filial = filial.substring(0, 4) //Tabela clientes só tem 4 digitos na coluna A1_FILIAL
-
-        const response = await axios.get(`${process.env.APITOTVS}/MODULO_ORC/cliente?filial=${filial}&cliente=${cliente}&loja=${loja}`, {
-            auth: {
-                username: process.env.USERTOTVS,
-                password: process.env.SENHAPITOTVS
-            }
-        });
-        
-        const item = response.data.objects[0]
-
-        res.json({
-            A1_COD:  item.A1_COD,
-            A1_NOME: item.A1_NOME.trimEnd(),
-            A1_CGC:  item.A1_CGC,
-            A1_END:  item.A1_END.trimEnd(),
-            A1_MUN:  item.A1_MUN.trimEnd(),
-            A1_EST:  item.A1_EST,
-            A1_CEP:  item.A1_CEP,
-        })
-    } catch (error) {
-        console.log(error);
-        res.sendStatus(500);
-    }
-}
-
-async function condPag(req, res) {
-    try {
-        const cod = !req.query.cod  ? '' : req.query.cod;
-
-        const response = await axios.get(`${process.env.APITOTVS}/MODULO_ORC/condpag?numero=${cod}`, {
-            auth: {
-                username: process.env.USERTOTVS,
-                password: process.env.SENHAPITOTVS
-            }
-        });
-        
-        const item = response.data.objects[0]
-
-        res.json({
-            E4_CODIGO:  item.E4_CODIGO,
-            E4_TIPO:    item.E4_TIPO,
-            E4_DESCRI:  item.E4_DESCRI,
-        })
-    } catch (error) {
-        console.log(error);
-        res.sendStatus(500);
-    }
-}
-
 module.exports = { 
     grid,
     orcamentoInfo,
     orcamentoItems,
-    cliente,
-    condPag
 };
