@@ -1,5 +1,5 @@
 const axios = require('axios');
-const {convertDateFormat} = require('../../utils/protheus')
+const {convertDateFormat, formatarParaMoedaBrasileira} = require('../../utils/protheus')
 
 async function grid(req, res) {
     try {
@@ -70,6 +70,42 @@ async function orcamentoInfo(req, res) {
     }
 }
 
+async function orcamentoItems(req, res) {
+    try {
+        const filial  = !req.query.filial  ? '' : req.query.filial;
+        const numero  = !req.query.numero  ? '' : req.query.numero;
+
+        const response = await axios.get(`${process.env.APITOTVS}/MODULO_ORC/items?numero=${numero}&filial=${filial}`, {
+            auth: {
+                username: process.env.USERTOTVS,
+                password: process.env.SENHAPITOTVS
+            }
+        });
+
+        const items = [];
+
+        response.data.objects.forEach(element => {
+            items.push({
+                CJ_FILIAL:  element.CJ_FILIAL,
+                CK_ITEM:    element.CK_ITEM,
+                CK_PRODUTO: element.CK_PRODUTO.trimEnd(),
+                CK_UM:      element.CK_UM,
+                CK_QTDVEN:  element.CK_QTDVEN,
+                CK_PRCVEN:  formatarParaMoedaBrasileira(element.CK_PRCVEN),
+                CK_VALOR:   formatarParaMoedaBrasileira(element.CK_VALOR),
+                CK_DESCRI:  element.CK_DESCRI,
+                CK_NUM:     element.CK_NUM,
+            })
+        });
+
+        res.json(items);
+
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+}
+
 async function cliente(req, res) {
     try {
         let filial   = !req.query.filial   ? '' : req.query.filial;
@@ -102,8 +138,34 @@ async function cliente(req, res) {
     }
 }
 
+async function condPag(req, res) {
+    try {
+        const cod = !req.query.cod  ? '' : req.query.cod;
+
+        const response = await axios.get(`${process.env.APITOTVS}/MODULO_ORC/condpag?numero=${cod}`, {
+            auth: {
+                username: process.env.USERTOTVS,
+                password: process.env.SENHAPITOTVS
+            }
+        });
+        
+        const item = response.data.objects[0]
+
+        res.json({
+            E4_CODIGO:  item.E4_CODIGO,
+            E4_TIPO:    item.E4_TIPO,
+            E4_DESCRI:  item.E4_DESCRI,
+        })
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+}
+
 module.exports = { 
     grid,
     orcamentoInfo,
-    cliente
+    orcamentoItems,
+    cliente,
+    condPag
 };

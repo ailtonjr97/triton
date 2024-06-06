@@ -7,7 +7,12 @@ function convertDateFormat(dateString) {
     return `${day}/${month}/${year}`;
 }
 
+function formatarParaMoedaBrasileira(valor) {
+    return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+
 module.exports = {
     quebraString,
-    convertDateFormat
+    convertDateFormat,
+    formatarParaMoedaBrasileira
 };
