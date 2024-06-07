@@ -1,5 +1,5 @@
 const axios = require('axios');
-const {convertDateFormat, formatarParaMoedaBrasileira} = require('../../utils/protheus')
+const {convertDateFormat, formatarParaMoedaBrasileira, convertDateForInput} = require('../../utils/protheus')
 
 async function grid(req, res) {
     try {
@@ -39,12 +39,10 @@ async function grid(req, res) {
 
 async function orcamentoInfo(req, res) {
     try {
-        const filial  = !req.query.filial  ? '' : req.query.filial;
-        const numero  = !req.query.numero  ? '' : req.query.numero;
-        const cliente = !req.query.cliente ? '' : req.query.cliente;
-        const loja    = !req.query.loja    ? '' : req.query.loja;
+        const { filial = '', numero = '', cliente = '', loja = '' } = req.query;
 
-        const response = await axios.get(`${process.env.APITOTVS}/MODULO_ORC/unico?filial=${filial}&numero=${numero}&cliente=${cliente}&loja=${loja}`, {
+        const response = await axios.get(`${process.env.APITOTVS}/MODULO_ORC/unico`, {
+            params: { filial, numero, cliente, loja },
             auth: {
                 username: process.env.USERTOTVS,
                 password: process.env.SENHAPITOTVS
@@ -56,7 +54,7 @@ async function orcamentoInfo(req, res) {
         res.json({
             CJ_FILIAL:  apiObject.CJ_FILIAL,
             CJ_NUM:     apiObject.CJ_NUM,
-            CJ_EMISSAO: convertDateFormat(apiObject.CJ_EMISSAO),
+            CJ_EMISSAO: convertDateForInput(apiObject.CJ_EMISSAO),
             CJ_CLIENTE: apiObject.CJ_CLIENTE,
             CJ_LOJA:    apiObject.CJ_LOJA,
             CJ_CLIENT:  apiObject.CJ_CLIENT,
@@ -68,6 +66,14 @@ async function orcamentoInfo(req, res) {
             CJ_XVEND1:  apiObject.CJ_XVEND1,
             CJ_TIPLIB:  apiObject.CJ_TIPLIB,
             CJ_XESTADO: apiObject.CJ_XESTADO,
+            CJ_XPVKORP: apiObject.CJ_XPVKORP,
+            CJ_TIPOCLI: apiObject.CJ_TIPOCLI,
+            CJ_XDESTAB: apiObject.CJ_XDESTAB,
+            A3_NOME:    apiObject.A3_NOME,
+            CJ_XFREIMP: formatarParaMoedaBrasileira(apiObject.CJ_XFREIMP),
+            CJ_VALIDA:  convertDateForInput(apiObject.CJ_VALIDA),
+            CJ_XOBS:    apiObject.CJ_XOBS,
+            CJ_DATA1:   convertDateForInput(apiObject.CJ_DATA1)
         });
     } catch (error) {
         console.log(error);
@@ -77,31 +83,27 @@ async function orcamentoInfo(req, res) {
 
 async function orcamentoItems(req, res) {
     try {
-        const filial  = !req.query.filial  ? '' : req.query.filial;
-        const numero  = !req.query.numero  ? '' : req.query.numero;
+        const { filial = '', numero = '' } = req.query;
 
-        const response = await axios.get(`${process.env.APITOTVS}/MODULO_ORC/items?numero=${numero}&filial=${filial}`, {
+        const response = await axios.get(`${process.env.APITOTVS}/MODULO_ORC/items`, {
+            params: { numero, filial },
             auth: {
                 username: process.env.USERTOTVS,
                 password: process.env.SENHAPITOTVS
             }
         });
 
-        const items = [];
-
-        response.data.objects.forEach(element => {
-            items.push({
-                CJ_FILIAL:  element.CJ_FILIAL,
-                CK_ITEM:    element.CK_ITEM,
-                CK_PRODUTO: element.CK_PRODUTO.trimEnd(),
-                CK_UM:      element.CK_UM,
-                CK_QTDVEN:  element.CK_QTDVEN,
-                CK_PRCVEN:  formatarParaMoedaBrasileira(element.CK_PRCVEN),
-                CK_VALOR:   formatarParaMoedaBrasileira(element.CK_VALOR),
-                CK_DESCRI:  element.CK_DESCRI,
-                CK_NUM:     element.CK_NUM,
-            })
-        });
+        const items = response.data.objects.map(element => ({
+            CJ_FILIAL:  element.CJ_FILIAL,
+            CK_ITEM:    element.CK_ITEM,
+            CK_PRODUTO: element.CK_PRODUTO.trimEnd(),
+            CK_UM:      element.CK_UM,
+            CK_QTDVEN:  element.CK_QTDVEN,
+            CK_PRCVEN:  formatarParaMoedaBrasileira(element.CK_PRCVEN),
+            CK_VALOR:   formatarParaMoedaBrasileira(element.CK_VALOR),
+            CK_DESCRI:  element.CK_DESCRI,
+            CK_NUM:     element.CK_NUM,
+        }));
 
         res.json(items);
 
