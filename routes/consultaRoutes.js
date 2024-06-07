@@ -3,10 +3,12 @@ const router = express.Router();
 const { 
     cliente,
     condicaoDePagamento,
-    tabelaDePreco
+    tabelaDePreco,
+    vendedor
 } = require('../controllers/consultasController.js');
 
 router.get("/cliente", cliente);
+router.get("/vendedor", vendedor);
 router.get("/cond-pag", condicaoDePagamento);
 router.get("/tab-preco", tabelaDePreco);
 

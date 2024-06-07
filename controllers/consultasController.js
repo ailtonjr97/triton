@@ -76,8 +76,35 @@ async function tabelaDePreco(req, res) {
     }
 }
 
+async function vendedor(req, res) {
+    try {
+        let filial   = !req.query.filial ? '' : req.query.filial;
+        const codigo = !req.query.codigo ? '' : req.query.codigo;
+
+        filial = filial.substring(0, 4) //Tabela vendedores só tem 4 digitos na coluna A3_FILIAL
+
+        const response = await axios.get(`${process.env.APITOTVS}/PADRAO_SA3/one?filial=${filial}&codigo=${codigo}`, {
+            auth: {
+                username: process.env.USERTOTVS,
+                password: process.env.SENHAPITOTVS
+            }
+        });
+        
+        const item = response.data.objects[0]
+
+        res.json({
+            0:  item.A3_COD,
+            1:  item.A3_NOME.trimEnd(),
+        })
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(error.response?.status || 500);
+    }
+}
+
 module.exports = { 
     cliente,
     condicaoDePagamento,
-    tabelaDePreco
+    tabelaDePreco,
+    vendedor
 };
