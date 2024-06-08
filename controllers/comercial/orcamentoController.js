@@ -2,38 +2,31 @@ const axios = require('axios');
 const {convertDateFormat, formatarParaMoedaBrasileira, convertDateForInput} = require('../../utils/protheus')
 
 async function grid(req, res) {
-    try {
-        const filial   = !req.query.filial   ? ''  : req.query.filial;
-        const numero   = !req.query.numero   ? ''  : req.query.numero;
-        const cliente  = !req.query.cliente  ? ''  : req.query.cliente;
-        const vendedor = !req.query.vendedor ? '' : req.query.vendedor;
+    const { filial = '', numero = '', cliente = '', vendedor = '' } = req.query;
 
-        const response = await axios.get(`${process.env.APITOTVS}/MODULO_ORC/grid?filial=${filial}&numero=${numero}&cliente=${cliente}&vendedor=${vendedor}`, {
+    try {
+        const response = await axios.get(`${process.env.APITOTVS}/MODULO_ORC/grid`, {
+            params: { filial, numero, cliente, vendedor },
             auth: {
                 username: process.env.USERTOTVS,
                 password: process.env.SENHAPITOTVS
             }
         });
 
-        const items = []
-
-        response.data.objects.forEach(e => {
-            items.push({
-                CJ_FILIAL:  e.CJ_FILIAL,
-                CJ_NUM:     e.CJ_NUM,
-                CJ_CLIENTE: e.CJ_CLIENTE,
-                CJ_LOJA:    e.CJ_LOJA,
-                A1_NOME:    e.A1_NOME.trimEnd(),
-                A3_NOME:    e.A3_NOME.trimEnd(),
-                R_E_C_N_O_: e.R_E_C_N_O_
-                
-            })
-        });
+        const items = response.data.objects.map(e => ({
+            CJ_FILIAL:  e.CJ_FILIAL,
+            CJ_NUM:     e.CJ_NUM,
+            CJ_CLIENTE: e.CJ_CLIENTE,
+            CJ_LOJA:    e.CJ_LOJA,
+            A1_NOME:    e.A1_NOME.trimEnd(),
+            A3_NOME:    e.A3_NOME.trimEnd(),
+            R_E_C_N_O_: e.R_E_C_N_O_
+        }));
 
         res.json(items);
     } catch (error) {
-        res.sendStatus(error.response.status)
-        console.log(error)
+        console.error('Erro ao obter dados da grid:', error.message);
+        res.sendStatus(error.response?.status || 500);
     }
 }
 
@@ -73,7 +66,12 @@ async function orcamentoInfo(req, res) {
             CJ_XFREIMP: formatarParaMoedaBrasileira(apiObject.CJ_XFREIMP),
             CJ_VALIDA:  convertDateForInput(apiObject.CJ_VALIDA),
             CJ_XOBS:    apiObject.CJ_XOBS,
-            CJ_DATA1:   convertDateForInput(apiObject.CJ_DATA1)
+            CJ_DATA1:   convertDateForInput(apiObject.CJ_DATA1),
+            CJ_XENTREG: convertDateForInput(apiObject.CJ_XENTREG),
+            CJ_CST_FTS: apiObject.CJ_CST_FTS,
+            CJ_XFREMA:  formatarParaMoedaBrasileira(apiObject.CJ_XFREMA),
+            CJ_XTRANSP: apiObject.CJ_XTRANSP,
+            CJ_XFRESIM: formatarParaMoedaBrasileira(apiObject.CJ_XFRESIM),
         });
     } catch (error) {
         console.log(error);
