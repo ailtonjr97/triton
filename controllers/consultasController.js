@@ -6,7 +6,7 @@ async function cliente(req, res) {
         const cliente  = !req.query.cliente  ? '' : req.query.cliente;
         const loja     = !req.query.loja     ? '' : req.query.loja;
 
-        filial = filial.substring(0, 4) //Tabela clientes só tem 4 digitos na coluna A1_FILIAL
+        filial = filial.substring(0, 4) //Filial com somente 4 digitos.
 
         const response = await axios.get(`${process.env.APITOTVS}/PADRAO_SA1/cliente?filial=${filial}&cliente=${cliente}&loja=${loja}`, {
             auth: {
@@ -81,7 +81,7 @@ async function vendedor(req, res) {
         let filial   = !req.query.filial ? '' : req.query.filial;
         const codigo = !req.query.codigo ? '' : req.query.codigo;
 
-        filial = filial.substring(0, 4) //Tabela vendedores só tem 4 digitos na coluna A3_FILIAL
+        filial = filial.substring(0, 4) //Filial com somente 4 digitos.
 
         const response = await axios.get(`${process.env.APITOTVS}/PADRAO_SA3/one?filial=${filial}&codigo=${codigo}`, {
             auth: {
@@ -102,9 +102,37 @@ async function vendedor(req, res) {
     }
 }
 
+async function transportadora(req, res) {
+    try {
+
+        let {filial, codigo} = req.query
+
+        filial = filial.substring(0, 4) //Filial com somente 4 digitos.
+
+        const response = await axios.get(`${process.env.APITOTVS}/PADRAO_SA4/one`, {
+            params: {filial, codigo},
+            auth: {
+                username: process.env.USERTOTVS,
+                password: process.env.SENHAPITOTVS
+            }
+        });
+        
+        const item = response.data.objects[0]
+
+        res.json({
+            0:  item.A4_COD,
+            1:  item.A4_NOME.trimEnd(),
+        })
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(error.response?.status || 500);
+    }
+}
+
 module.exports = { 
     cliente,
     condicaoDePagamento,
     tabelaDePreco,
-    vendedor
+    vendedor,
+    transportadora
 };
