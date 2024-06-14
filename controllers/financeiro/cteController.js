@@ -2,12 +2,25 @@ const axios = require('axios');
 const fs = require('fs').promises;
 const xml2js = require('xml2js');
 const Client = require('ssh2-sftp-client');
-const cteModel = require("../../models/logistica/cteModel");
+const cteModel = require("../../models/financeiro/cteModel");
+const {formatCurrency} = require('../../utils/protheus')
 
 async function gridCte(req, res) {
     try {
-        const data = await cteModel.gridCteNf();
-        res.send(data);
+
+        const {arquivado = 0} = req.query
+
+        const data = await cteModel.gridCteNf(arquivado);
+
+        const grid = data.map(e => ({
+            id: e.id,
+            numero_nf:  e.numero_nf,
+            numero_cte: e.numero_cte,
+            frete_nf:   formatCurrency(e.frete_nf),
+            frete_cte:  formatCurrency(e.frete_cte)
+        }));
+
+        res.json(grid);
     } catch (error) {
         console.error('Erro ao obter dados da tabela cte_nf:', error);
         res.sendStatus(500); // Envia o status 500 em caso de erro
@@ -107,10 +120,21 @@ async function refreshCte(req, res) {
                         }
 
                         if(freteNf.data.solution == 'A consulta de registros n�o retornou nenhuma informa��o'){
-                            await cteModel.insertCteNf(chave, element, 9999.99, 9999.99, chavePraNumero(chave), chavePraNumero(element))
+                            await cteModel.insertCteNf(chave, element, null, valFrete, chavePraNumero(chave), chavePraNumero(element))
                         }else{
                             await cteModel.insertCteNf(chave, element, freteNf.data.objects[0].FT_FRETE, valFrete, chavePraNumero(chave), chavePraNumero(element))
                             console.log(`Chave encontrada no arquivo ${element}.xml: ${chave}`);
+                        }
+
+                        try {
+                            await axios.put(`${process.env.APITOTVS}/CONSULTA_SF3/grdcte?chave=${element}`, '', {
+                                auth: {
+                                    username: process.env.USERTOTVS,
+                                    password: process.env.SENHAPITOTVS
+                                }
+                            });
+                        } catch (error) {
+                            console.error(`Erro ao atualizar F3_XGRDCTE CTE ${element}: ${error}`);
                         }
 
 
@@ -129,10 +153,21 @@ async function refreshCte(req, res) {
                         }
 
                         if(freteNf.data.solution == 'A consulta de registros n�o retornou nenhuma informa��o'){
-                            await cteModel.insertCteNf(chave, element, 9999.99, 9999.99, chavePraNumero(chave), chavePraNumero(element))
+                            await cteModel.insertCteNf(chave, element, null, valFrete, chavePraNumero(chave), chavePraNumero(element))
                         }else{
                             await cteModel.insertCteNf(chave, element, freteNf.data.objects[0].FT_FRETE, valFrete, chavePraNumero(chave), chavePraNumero(element))
                             console.log(`Chave encontrada no arquivo (padrao diferente) ${element}.xml: ${chave}`);
+                        }
+
+                        try {
+                            await axios.put(`${process.env.APITOTVS}/CONSULTA_SF3/grdcte?chave=${element}`, '', {
+                                auth: {
+                                    username: process.env.USERTOTVS,
+                                    password: process.env.SENHAPITOTVS
+                                }
+                            });
+                        } catch (error) {
+                            console.error(`Erro ao atualizar F3_XGRDCTE CTE ${element}: ${error}`);
                         }
 
                     } else{
@@ -155,7 +190,18 @@ async function refreshCte(req, res) {
     }
 }
 
+async function arquivaCte(req, res) {
+    try {
+        await cteModel.arquivaCteNf(req.body.id);
+        res.sendStatus(200)
+    } catch (error) {
+        console.error('Erro ao arquivar:', error);
+        res.sendStatus(500); // Envia o status 500 em caso de erro
+    }
+}
+
 module.exports = { 
     refreshCte,
-    gridCte
+    gridCte,
+    arquivaCte
 };

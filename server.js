@@ -8,6 +8,7 @@ const auth = require("./controllers/authController.js");
 const comercial = require("./routes/comercialRoutes.js");
 const consulta = require("./routes/consultaRoutes.js");
 const logistica = require("./routes/logisticaRoutes.js");
+const financeiro = require("./routes/financeiroRoutes.js");
 const files = require("./controllers/filesController.js");
 const { authenticationMiddleware, authenticationMiddlewareApi } = require('./middlewares/authentication.js');
 
@@ -23,6 +24,7 @@ app.use("/users", authenticationMiddleware, users);
 app.use("/consulta", authenticationMiddleware, consulta);
 app.use("/comercial", authenticationMiddleware, comercial);
 app.use("/logistica", authenticationMiddleware, logistica);
+app.use("/financeiro", authenticationMiddleware, financeiro);
 app.use("/files", files);
 
 

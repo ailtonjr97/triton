@@ -36,9 +36,29 @@ function convertDateForInput(dateString) {
     return formattedDate;
 }
 
+function formatCurrency(value) {
+    // Verifica se o valor é nulo ou indefinido
+    if (value === null || value === undefined) {
+        return ''; // Retorna uma string vazia para valores nulos ou indefinidos
+    }
+
+    // Converte a string para um número float
+    let number = parseFloat(value);
+
+    // Verifica se a conversão para número foi bem-sucedida
+    if (isNaN(number)) {
+        return ''; // Retorna uma string vazia para valores inválidos
+    }
+
+    // Formata o número para a moeda brasileira
+    return number.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+
+
 module.exports = {
     quebraString,
     convertDateFormat,
     formatarParaMoedaBrasileira,
-    convertDateForInput
+    convertDateForInput,
+    formatCurrency
 };
