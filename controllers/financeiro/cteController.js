@@ -8,9 +8,9 @@ const {formatCurrency} = require('../../utils/protheus')
 async function gridCte(req, res) {
     try {
 
-        const {arquivado = 0} = req.query
+        const {arquivado = 0, id = '', nf = '', cte = '', freteNf = '', freteCte = ''} = req.query
 
-        const data = await cteModel.gridCteNf(arquivado);
+        const data = await cteModel.gridCteNf(arquivado, id, nf, cte, freteNf, freteCte);
 
         const grid = data.map(e => ({
             id: e.id,

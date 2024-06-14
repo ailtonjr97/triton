@@ -22,13 +22,22 @@ async function connect(){
 
 connect();
 
-const gridCteNf = async (arquivado) => {
+const gridCteNf = async (arquivado, id, nf, cte, freteNf, freteCte) => {
     let conn;
 
     try {
         conn = await connect();
-        const query = `SELECT * FROM cte_nf cn WHERE arquivado = ? ORDER BY id DESC`;
-        const values = [arquivado];
+        const query = `
+            SELECT * FROM cte_nf
+            WHERE arquivado = ? 
+            AND id LIKE ?
+            AND chave_nf   LIKE ?
+            AND chave_cte  LIKE ?
+            AND (frete_nf  LIKE ? OR frete_nf IS NULL)
+            AND (frete_cte LIKE ? OR frete_cte IS NULL)
+            ORDER BY id DESC
+        `;
+        const values = [arquivado, `%${id}%`, `%${nf}%`, `%${cte}%`, `%${freteNf}%`, `%${freteCte}%`];
         const [result] = await conn.query(query, values);
         return result;
     } catch (error) {
@@ -40,6 +49,7 @@ const gridCteNf = async (arquivado) => {
         }
     }
 };
+
 
 const insertCteNf = async (chaveNf, chaveCte, freteNf, freteCte, numeroNf, numeroCte) => {
     let conn;
