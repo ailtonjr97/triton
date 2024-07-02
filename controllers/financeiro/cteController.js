@@ -225,7 +225,7 @@ async function pdfNf(req, res) {
   async function roboBusca(req, res) {
     try {
         const { chave } = req.query;
-        const browser = await puppeteer.launch({ headless: false, args: ['--disable-setuid-sandbox', '--no-sandbox'] });
+        const browser = await puppeteer.launch({ headless: true, args: ['--disable-setuid-sandbox', '--no-sandbox'] });
         const page = await browser.newPage();
         const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
